@@ -69,6 +69,18 @@ const Header: React.FC = () => {
               Gói và mức giá
             </Link>
           </Col>
+          <Col>
+            <Link
+              to="/home"
+              style={{
+                color: "white",
+                fontSize: 18,
+                textDecoration: "none",
+              }}
+            >
+              home
+            </Link>
+          </Col>
         </Row>
         <div
           style={{
