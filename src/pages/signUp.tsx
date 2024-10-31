@@ -13,7 +13,7 @@ function SignUp() {
     <div style={style.loginForm}>
       <div style={{ flex: 1 }}>
         <div onClick={handleGoBackClick} style={style.clickButton}>
-          <h3 style={{ fontWeight: 500 }}>{"<<"} Trở lại với đăng nhập</h3>
+          <h5 style={{ fontWeight: 500 }}>{"<<"} Trở lại với đăng nhập</h5>
         </div>
         <div style={{ fontSize: 15, marginLeft: "7%", marginRight: "5%" }}>
           Chúng tôi sẽ kiểm tra xem bạn đã có tài khoảng của bạn và giúp bạn nếu
@@ -90,7 +90,7 @@ const style = {
   },
   inputStyle: {
     padding: "8px 5px 8px 12px",
-    width: "80%",
+    width: "86%",
     margin: "0px 0px 3% 7%",
     background: "#EEEEEE",
     borderRadius: 8,

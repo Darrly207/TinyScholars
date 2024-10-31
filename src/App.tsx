@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/authContext";
-import Header from "./components/Header";
+import Header from "./components/header";
 import IndexPage from "./pages";
 import Business from "./pages/business";
 import PackagesAndPrices from "./pages/packagesAndPrices";
@@ -11,13 +11,17 @@ import SignUp from "./pages/signUp";
 import Support from "./pages/support";
 import Home from "./pages/home";
 
+import GameLayout from "./pages/gameLayout";
+import { FullscreenProvider } from "./context/fullScreenContext";
 const App: React.FC = () => {
   const location = useLocation();
 
   return (
     <AuthProvider>
       {/* Only render Header if not on the /home route */}
-      {location.pathname !== "/home" && <Header />}
+      {location.pathname !== "/home" && location.pathname !== "/GameLayout" && (
+        <Header />
+      )}
 
       <Routes>
         <Route path="/" element={<IndexPage />} />
@@ -28,15 +32,17 @@ const App: React.FC = () => {
         <Route path="/Signup" element={<SignUp />} />
         <Route path="/support" element={<Support />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/GameLayout" element={<GameLayout />} />
       </Routes>
     </AuthProvider>
   );
 };
 
-// Wrap the App component with BrowserRouter
 const AppWithRouter: React.FC = () => (
   <BrowserRouter>
-    <App />
+    <FullscreenProvider>
+      <App />
+    </FullscreenProvider>
   </BrowserRouter>
 );
 

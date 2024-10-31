@@ -42,12 +42,12 @@ const Header: React.FC = () => {
                 textDecoration: "none",
               }}
             >
-              Trò chơi nổi bậc
+              Trò chơi
             </Link>
           </Col>
           <Col>
             <Link
-              to="/Business"
+              to="/business"
               style={{
                 color: "white",
                 fontSize: 18,

@@ -9,7 +9,6 @@ function Home() {
         style={{
           display: "flex",
           alignItems: "center",
-          padding: 10,
           maxHeight: 65,
           overflow: "hidden",
           background: "#d3f1f5",
@@ -22,7 +21,14 @@ function Home() {
             justifyContent: "space-around",
           }}
         >
-          <Col style={{ overflow: "hidden" }}>
+          <Col
+            style={{
+              overflow: "hidden",
+              display: "flex",
+              alignItems: "center",
+              marginLeft: "3vw",
+            }}
+          >
             <Link
               to="/"
               style={{
@@ -46,6 +52,7 @@ function Home() {
                 style={{
                   color: "#00FA9A",
                   fontSize: 25,
+                  alignContent: "center",
                 }}
               >
                 TinyScholars
@@ -105,6 +112,7 @@ function Home() {
         style={{
           background: "#E0F7FA",
           flex: "none",
+          height: "40vh",
         }}
       >
         <div
@@ -114,34 +122,132 @@ function Home() {
             justifySelf: "center",
           }}
         >
-          <img
-            src={avatar}
-            alt=""
+          <div
             style={{
-              maxHeight: 70,
-              maxWidth: 70,
-              borderRadius: 50,
-              marginRight: "7%",
-              alignItems: "start",
-            }}
-          />
-          <h1
-            style={{
-              fontSize: 40,
-              maxWidth: "100%",
               display: "flex",
-              flex: 1,
-
-              flexDirection: "column",
+              alignItems: "center",
+              marginTop: "7vh",
             }}
           >
-            <div style={{ display: "flex", width: "70%", gap: "10px" }}>
-              Nơi{" "}
-              <div style={{ color: "blue", margin: "0 5px" }}> học tập </div> và{" "}
-              <div style={{ color: "orange", margin: "0 5px" }}>chơi</div>
-            </div>{" "}
-            lý tưởng cho bé!!
-          </h1>
+            <img
+              src={avatar}
+              alt=""
+              style={{
+                maxHeight: 70,
+                maxWidth: 70,
+                borderRadius: 50,
+                marginRight: "7%",
+                alignItems: "start",
+              }}
+            />
+            <h1
+              style={{
+                fontSize: 40,
+                maxWidth: "100%",
+                display: "flex",
+                flex: 1,
+                flexDirection: "column",
+              }}
+            >
+              <div style={{ display: "flex", width: "70%", gap: "10px" }}>
+                Nơi{" "}
+                <div
+                  style={{
+                    color: "blue",
+                    margin: "0 5px",
+                    width: "20vw",
+                    display: "flex",
+                    flexDirection: "row",
+                  }}
+                >
+                  {" "}
+                  học tập{" "}
+                </div>{" "}
+                và <div style={{ color: "orange", margin: "0 5px" }}>chơi</div>
+              </div>{" "}
+              <div style={{ marginLeft: "2vw" }}>lý tưởng cho bé!!</div>
+            </h1>
+          </div>
+        </div>
+        <div
+          style={{
+            justifyItems: "center",
+            margin: "3vh 0vw",
+          }}
+        >
+          <h4
+            style={{
+              border: "1px",
+              padding: "10px",
+              borderRadius: 10,
+              cursor: "pointer",
+              background: "#8DEEEE",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            Bắt đầu {">"}
+          </h4>
+        </div>
+      </div>
+      <div style={{ background: "#E0F7FA", flex: 1, height: "52.5vh" }}>
+        <div style={{ marginLeft: "5vw" }}>
+          <h2 style={{ fontWeight: 400 }}> Trò chơi cho bé</h2>
+        </div>
+        <div style={{ marginLeft: "10vw", width: "80vw" }}>
+          <div
+            style={{
+              display: "flex",
+              marginTop: "5vh",
+              justifyContent: "space-around",
+            }}
+          >
+            <Link
+              to="/gameLayout"
+              style={{
+                width: "14vw",
+                height: "23vh",
+                background: "#8DEEEE",
+                alignContent: "center",
+                borderRadius: 15,
+                justifyItems: "center",
+                cursor: "pointer",
+                textDecoration: "none",
+              }}
+            >
+              <h5 style={{ fontWeight: 400 }}>Nhiều lựa chọn</h5>
+            </Link>
+            <Link
+              to="/gameLayout"
+              style={{
+                width: "14vw",
+                height: "23vh",
+                background: "#8DEEEE",
+                alignContent: "center",
+                borderRadius: 15,
+                justifyItems: "center",
+                cursor: "pointer",
+                textDecoration: "none",
+              }}
+            >
+              <h5 style={{ fontWeight: 400 }}>Đúng / Sai</h5>
+            </Link>
+            <Link
+              to="/gameLayout"
+              style={{
+                width: "14vw",
+                height: "23vh",
+                background: "#8DEEEE",
+                alignContent: "center",
+                borderRadius: 15,
+                justifyItems: "center",
+                cursor: "pointer",
+                textDecoration: "none",
+              }}
+            >
+              <h5 style={{ fontWeight: 400 }}>Lật thẻ</h5>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
