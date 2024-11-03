@@ -97,6 +97,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
             <TopicSettings
               settings={settings}
               onSettingsChange={onSettingsChange}
+              key={settings.gameType}
             />
           )}
         </div>

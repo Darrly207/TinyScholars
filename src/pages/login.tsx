@@ -8,6 +8,7 @@ import google from "../assets/google-icon-isolated-3d-render-illustration_47987-
 import facbook from "../assets/blue-white-sign-that-says-facebook_470458-570.avif";
 import gmail from "../assets/gmail-logo-on-transparent-white-background-free-vector.jpg";
 import backgroundImage from "../assets/reflection.avif";
+import axios from "axios";
 interface GoogleLoginResponse {
   access_token: string;
 }
@@ -23,7 +24,7 @@ interface LoginError {
   general?: string;
 }
 
-//const FACEBOOK_APP_ID = "YOUR_FACEBOOK_APP_ID";
+const FACEBOOK_APP_ID = "581658761017436";
 
 const LoginPage: React.FC = () => {
   const { login, loginWithGoogle, loginWithFacebook } = useAuth();
@@ -64,7 +65,14 @@ const LoginPage: React.FC = () => {
       await login(credentials);
       navigate("/");
     } catch (err) {
-      setError("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
+      if (axios.isAxiosError(err) && err.response) {
+        setError(
+          err.response.data.message ||
+            "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin."
+        );
+      } else {
+        setError("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -74,38 +82,36 @@ const LoginPage: React.FC = () => {
     navigate("/Signup");
   };
 
-  // Google Login
-  // const googleLogin = useGoogleLogin({
-  //   onSuccess: async (tokenResponse: GoogleLoginResponse) => {
-  //     setIsLoading(true);
-  //     try {
-  //       await loginWithGoogle(tokenResponse.access_token);
-  //       navigate("/");
-  //     } catch (error) {
-  //       setError("Đăng nhập với Google thất bại");
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   },
-  //   onError: () => setError("Đăng nhập với Google thất bại"),
-  // });
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse: GoogleLoginResponse) => {
+      setIsLoading(true);
+      try {
+        await loginWithGoogle(tokenResponse.access_token);
+        navigate("/");
+      } catch (error) {
+        setError("Đăng nhập với Google thất bại");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    onError: () => setError("Đăng nhập với Google thất bại"),
+  });
 
-  // Facebook Login using custom hook
-  // const handleFacebookLogin = useFacebookLogin(
-  //   FACEBOOK_APP_ID,
-  //   async (token: string) => {
-  //     setIsLoading(true);
-  //     try {
-  //       await loginWithFacebook(token);
-  //       navigate("/");
-  //     } catch (error) {
-  //       setError("Đăng nhập với Facebook thất bại");
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   },
-  //   (error: string) => setError(error)
-  // );
+  const handleFacebookLogin = useFacebookLogin(
+    FACEBOOK_APP_ID,
+    async (token: string) => {
+      setIsLoading(true);
+      try {
+        await loginWithFacebook(token);
+        navigate("/home");
+      } catch (error) {
+        setError("Đăng nhập với Facebook thất bại");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    (error: string) => setError(error)
+  );
 
   return (
     <div style={styles.loginForm}>
@@ -119,43 +125,42 @@ const LoginPage: React.FC = () => {
           Dùng email hoặc dịch vụ khác để tiếp tục với Tiny, hoàn toàn miễn phí
         </div>
 
-        {/* Google Login Button */}
-        <div
+        <button
           style={styles.googleContainer}
-          // onClick={() => googleLogin()}
-          //type="button"
-          //disabled={isLoading}
+          onClick={() => googleLogin()}
+          type="button"
+          disabled={isLoading}
         >
           <div style={{ flex: 1, marginLeft: 2 }}>
             <img src={google} alt="Google" style={styles.icon} />
           </div>
-          <div style={{ flex: 3 }}>Tiếp tục với Google</div>
-        </div>
+          <div style={{ flex: 10 }}>Tiếp tục với Google</div>
+        </button>
 
         {/* Facebook Login Button */}
-        <div
+        <button
           style={styles.googleContainer}
-          //onClick={handleFacebookLogin}
-          //disabled={isLoading}
+          onClick={handleFacebookLogin}
+          disabled={isLoading}
         >
           <div style={{ flex: 1, marginLeft: 2 }}>
             <img src={facbook} alt="Facebook" style={styles.icon} />
           </div>
-          <div style={{ flex: 3 }}>Tiếp tục với Facebook</div>
-        </div>
+          <div style={{ flex: 10 }}>Tiếp tục với Facebook</div>
+        </button>
 
         {/* Gmail Sign Up Button */}
-        <div
+        <button
           style={styles.googleContainer}
           onClick={handleGmailClick}
-          //type="button"
-          //disabled={isLoading}
+          type="button"
+          disabled={isLoading}
         >
           <div style={{ flex: 1, marginLeft: 2 }}>
             <img src={gmail} alt="Gmail" style={styles.icon} />
           </div>
-          <div style={{ flex: 3 }}>Tiếp tục với Gmail</div>
-        </div>
+          <div style={{ flex: 10 }}>Tiếp tục với Gmail</div>
+        </button>
 
         {error && <div style={styles.error}>{error}</div>}
 
@@ -198,6 +203,7 @@ const styles = {
     borderRadius: "0 20px 20px 0",
   },
   googleContainer: {
+    width: "85%",
     marginLeft: "5%",
     marginRight: "6%",
     display: "flex",

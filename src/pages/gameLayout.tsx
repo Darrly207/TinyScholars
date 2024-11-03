@@ -14,6 +14,7 @@ import SidebarRight from "../components/sidebarRight";
 import MultipleChoice from "../components/multipleChoice";
 import { FullscreenContext } from "../context/fullScreenContext";
 import TrueFalseQuest from "../components/trueFalseQuest";
+import FillInBlankQuest from "../components/fillInBlank";
 export type GameType = "multipleChoice" | "trueFalse" | "memoryCard";
 export type Background = "default" | "nature" | "space" | "abstract";
 
@@ -191,6 +192,13 @@ const GameLayout: React.FC = () => {
       case "memoryCard":
         return (
           <MemoryCardGame
+            question={currentQuestion}
+            onQuestionUpdate={handleQuestionUpdate}
+          />
+        );
+      case "fillInBlank":
+        return (
+          <FillInBlankQuest
             question={currentQuestion}
             onQuestionUpdate={handleQuestionUpdate}
           />

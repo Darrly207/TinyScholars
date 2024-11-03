@@ -1,6 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import avatar from "../assets/462261668_824775729828330_6660427130959853689_n.png";
+import { useAuth } from "../context/authContext";
+const ProtectedComponent = () => {
+  const { user, logout } = useAuth();
+
+  return (
+    <div>
+      Welcome {user?.firstName}!<button onClick={logout}>Logout</button>
+    </div>
+  );
+};
 const Logo = () => {
   return (
     <div

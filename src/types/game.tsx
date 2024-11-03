@@ -1,4 +1,9 @@
-export type GameType = "multipleChoice" | "trueFalse" | "memoryCard";
+export type GameType =
+  | "multipleChoice"
+  | "trueFalse"
+  | "memoryCard"
+  | "timeline"
+  | "fillInBlank";
 export type Background = "default" | "nature" | "space" | "abstract";
 
 export interface BaseQuestion {
@@ -29,7 +34,18 @@ export interface MemoryCard extends BaseQuestion {
   pairs: CardPair[];
 }
 
-export type Question = MultipleChoiceGame | TrueFalse | MemoryCard;
+interface FillInBlankGame extends BaseQuestion {
+  type: "fillInBlank";
+  imageUrl: string;
+  correctAnswer: string;
+  hint?: string;
+}
+
+export type Question =
+  | MultipleChoiceGame
+  | TrueFalse
+  | MemoryCard
+  | FillInBlankGame;
 
 export interface GameSettings {
   gameType: GameType;
