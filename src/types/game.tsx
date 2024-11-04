@@ -7,6 +7,7 @@ export type GameType =
 export type Background = "default" | "nature" | "space" | "abstract";
 
 export interface BaseQuestion {
+  mediaItems: MediaItem[];
   id: number;
   text: string;
   type: GameType;
@@ -34,7 +35,7 @@ export interface MemoryCard extends BaseQuestion {
   pairs: CardPair[];
 }
 
-interface FillInBlankGame extends BaseQuestion {
+export interface FillInBlankGame extends BaseQuestion {
   type: "fillInBlank";
   imageUrl: string;
   correctAnswer: string;
@@ -51,4 +52,15 @@ export interface GameSettings {
   gameType: GameType;
   background: Background;
   theme: "light" | "dark";
+}
+export interface MediaItem {
+  id: string;
+  url: string;
+  type: "image" | "video";
+  width: number;
+  height: number;
+  position: {
+    x: number;
+    y: number;
+  };
 }

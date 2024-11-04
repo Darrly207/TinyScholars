@@ -1,7 +1,15 @@
 import React, { useState, useRef } from "react";
-import { Settings, Upload, Image as ImageIcon } from "lucide-react";
-import type { GameSettings as GameSettingsType, Question } from "../types/game";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { Upload, X } from "lucide-react";
+import { Rnd } from "react-rnd"; // For resizable and draggable functionality
+import type {
+  GameSettings as GameSettingsType,
+  Question,
+  MediaItem,
+  MultipleChoiceGame,
+  TrueFalse,
+  MemoryCard,
+  FillInBlankGame,
+} from "../types/game";
 
 export type GameType =
   | "multipleChoice"
@@ -24,7 +32,6 @@ const SettingGame: React.FC<SettingGameProps> = ({
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const dropZoneRef = useRef<HTMLDivElement>(null);
 
   const handleGameTypeChange = (newGameType: GameType) => {
     onSettingsChange({ ...settings, gameType: newGameType });
@@ -36,137 +43,124 @@ const SettingGame: React.FC<SettingGameProps> = ({
         case "trueFalse":
           updatedQuestion = {
             ...currentQuestion,
-            type: "trueFalse",
+            type: newGameType,
             options: ["True", "False"],
             correctAnswer: 0,
-          };
+            mediaItems: [],
+          } as TrueFalse;
           break;
 
         case "memoryCard":
           updatedQuestion = {
             ...currentQuestion,
-            type: "memoryCard",
+            type: newGameType,
             pairs: [],
-          } as Question;
+            mediaItems: [],
+          } as MemoryCard;
           break;
 
         case "fillInBlank":
           updatedQuestion = {
             ...currentQuestion,
-            type: "fillInBlank",
-            imageUrl: "/api/placeholder/400/300",
+            type: newGameType,
             correctAnswer: "",
-            hint: "Nhập gợi ý tại đây",
-          } as Question;
+            hint: "Enter hint here",
+            mediaItems: [],
+          } as FillInBlankGame;
           break;
 
         default: // multipleChoice
           updatedQuestion = {
             ...currentQuestion,
-            type: "multipleChoice",
+            type: newGameType,
             options: ["Option 1", "Option 2", "Option 3", "Option 4"],
             correctAnswer: 0,
-          };
+            mediaItems: [],
+          } as MultipleChoiceGame;
       }
 
       onQuestionUpdate(updatedQuestion);
     }
   };
 
-  // Xử lý cập nhật thông tin cho câu hỏi điền từ
-  const handleFillInBlankUpdate = (field: string, value: string) => {
-    if (currentQuestion && currentQuestion.type === "fillInBlank") {
+  // Handle media upload
+  const handleMediaUpload = async (file: File) => {
+    try {
+      if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
+        alert("Please select an image or video file!");
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        alert("File size cannot exceed 10MB!");
+        return;
+      }
+
+      const mediaUrl = URL.createObjectURL(file);
+      const newMediaItem: MediaItem = {
+        id: Date.now().toString(),
+        url: mediaUrl,
+        type: file.type.startsWith("image/") ? "image" : "video",
+        width: 400,
+        height: 300,
+        position: { x: 0, y: 0 },
+      };
+
+      if (currentQuestion) {
+        const updatedQuestion = {
+          ...currentQuestion,
+          mediaItems: [...(currentQuestion.mediaItems || []), newMediaItem],
+        };
+        onQuestionUpdate(updatedQuestion);
+      }
+    } catch (error) {
+      console.error("Error uploading media:", error);
+      alert("An error occurred while uploading the media!");
+    }
+  };
+
+  // Handle media resize and position
+  const handleMediaResize = (
+    id: string,
+    size: { width: number; height: number },
+    position: { x: number; y: number }
+  ) => {
+    if (currentQuestion) {
+      const updatedMediaItems = currentQuestion.mediaItems.map((item) =>
+        item.id === id ? { ...item, ...size, position } : item
+      );
+
       const updatedQuestion = {
         ...currentQuestion,
-        [field]: value,
+        mediaItems: updatedMediaItems,
       };
       onQuestionUpdate(updatedQuestion);
     }
   };
 
-  // Xử lý tải ảnh lên
-  const handleImageUpload = async (file: File) => {
-    try {
-      // Kiểm tra loại file
-      if (!file.type.startsWith("image/")) {
-        alert("Vui lòng chọn file ảnh!");
-        return;
-      }
-
-      // Kiểm tra kích thước file (giới hạn 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert("Kích thước file không được vượt quá 5MB!");
-        return;
-      }
-
-      // Chuyển file thành URL
-      const imageUrl = URL.createObjectURL(file);
-
-      // Cập nhật question với URL mới
-      if (currentQuestion && currentQuestion.type === "fillInBlank") {
-        handleFillInBlankUpdate("imageUrl", imageUrl);
-      }
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      alert("Có lỗi xảy ra khi tải ảnh lên!");
-    }
-  };
-
-  // Xử lý paste ảnh
-  const handlePaste = (e: React.ClipboardEvent) => {
-    const items = e.clipboardData.items;
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].type.indexOf("image") !== -1) {
-        const file = items[i].getAsFile();
-        if (file) handleImageUpload(file);
-        break;
-      }
-    }
-  };
-
-  // Xử lý kéo thả ảnh
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      handleImageUpload(files[0]);
-    }
-  };
-
-  // Xử lý click để chọn file
-  const handleClickUpload = () => {
-    fileInputRef.current?.click();
-  };
-
-  // Xử lý chọn file từ input
-  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      handleImageUpload(files[0]);
+  // Handle media deletion
+  const handleMediaDelete = (id: string) => {
+    if (currentQuestion) {
+      const updatedMediaItems = currentQuestion.mediaItems.filter(
+        (item) => item.id !== id
+      );
+      const updatedQuestion = {
+        ...currentQuestion,
+        mediaItems: updatedMediaItems,
+      };
+      onQuestionUpdate(updatedQuestion);
     }
   };
 
   return (
-    <div className="p-4 border rounded" style={{ background: "#FFFFCC" }}>
-      <h3 className="flex items-center gap-2 mb-4">
-        <Settings size={20} />
-        Game Settings
-      </h3>
+    <div
+      className="p-4 border rounded bg-gray-50"
+      style={{ overflow: "hidden" }}
+    >
       <div className="space-y-4">
+        {/* Game Type Selection */}
         <div>
-          <label className="block mb-2">Game Type</label>
+          <label className="block mb-2 font-medium">Game Type</label>
           <select
             className="w-full p-2 border rounded"
             value={currentQuestion?.type || settings.gameType}
@@ -179,102 +173,113 @@ const SettingGame: React.FC<SettingGameProps> = ({
           </select>
         </div>
 
-        {/* Cài đặt riêng cho Fill in the Blank */}
-        {currentQuestion?.type === "fillInBlank" && (
-          <div className="mt-4 space-y-4">
-            {/* Khu vực upload ảnh */}
-            <div>
-              <label className="block mb-2">Image Upload</label>
-              <input
-                type="file"
-                ref={fileInputRef}
-                className="hidden"
-                accept="image/*"
-                onChange={handleFileInputChange}
-              />
+        {/* Media Upload Section */}
+        <div className="mt-4">
+          <label className="block mb-2 font-medium">Media Upload</label>
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            accept="image/*,video/*"
+            onChange={(e) =>
+              e.target.files?.[0] && handleMediaUpload(e.target.files[0])
+            }
+            multiple
+          />
 
-              <div
-                ref={dropZoneRef}
-                className={`relative border-2 border-dashed rounded-lg p-4 text-center cursor-pointer
-                  ${
-                    isDragging
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-gray-300"
-                  }
-                  hover:border-blue-500 hover:bg-blue-50 transition-colors`}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                onClick={handleClickUpload}
-                onPaste={handlePaste}
-                tabIndex={0}
-              >
-                <div className="flex flex-col items-center gap-2">
-                  <Upload size={24} className="text-gray-400" />
-                  <p className="text-sm text-gray-600">
-                    Kéo thả ảnh vào đây, hoặc click để chọn file
-                    <br />
-                    <span className="text-xs">
-                      Hỗ trợ: kéo thả, paste, chọn file
-                    </span>
-                  </p>
-                </div>
-              </div>
-
-              {/* Preview ảnh */}
-              {currentQuestion.type === "fillInBlank" &&
-                currentQuestion.imageUrl && (
-                  <div className="mt-4">
-                    <label className="block mb-2">Image Preview</label>
-                    <div className="relative border rounded-lg overflow-hidden">
-                      <img
-                        src={currentQuestion.imageUrl}
-                        alt="Preview"
-                        className="w-full h-48 object-contain"
-                      />
-                    </div>
-                  </div>
-                )}
-            </div>
-
-            <div>
-              <label className="block mb-2">Correct Answer</label>
-              <input
-                type="text"
-                className="w-full p-2 border rounded"
-                value={(currentQuestion as any).correctAnswer || ""}
-                onChange={(e) =>
-                  handleFillInBlankUpdate("correctAnswer", e.target.value)
-                }
-                placeholder="Enter correct answer"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-2">Hint (Optional)</label>
-              <textarea
-                className="w-full p-2 border rounded"
-                value={(currentQuestion as any).hint || ""}
-                onChange={(e) =>
-                  handleFillInBlankUpdate("hint", e.target.value)
-                }
-                placeholder="Enter hint for players"
-                rows={3}
-              />
-            </div>
-
-            <div className="mt-4">
-              <h4 className="text-sm font-semibold mb-2">Tips:</h4>
-              <ul className="text-sm text-gray-600 list-disc pl-4">
-                <li>Có thể kéo thả ảnh vào khung upload</li>
-                <li>Copy và paste ảnh trực tiếp vào khung</li>
-                <li>Click để chọn ảnh từ thiết bị</li>
-                <li>Hỗ trợ các định dạng: PNG, JPG, JPEG, GIF</li>
-                <li>Kích thước tối đa: 5MB</li>
-              </ul>
-            </div>
+          <div
+            className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer
+              ${isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300"}
+              hover:border-blue-500 hover:bg-blue-50 transition-colors`}
+            onClick={() => fileInputRef.current?.click()}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setIsDragging(true);
+            }}
+            onDragLeave={(e) => {
+              e.preventDefault();
+              setIsDragging(false);
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              setIsDragging(false);
+              const file = e.dataTransfer.files[0];
+              if (file) handleMediaUpload(file);
+            }}
+          >
+            <Upload className="mx-auto h-12 w-12 text-gray-400" />
+            <p className="mt-2 text-sm text-gray-600">
+              Drag and drop media files here, or click to select files
+            </p>
           </div>
-        )}
+        </div>
+
+        {/* Media Preview Section */}
+        {currentQuestion?.mediaItems &&
+          currentQuestion.mediaItems.length > 0 && (
+            <div className="mt-4">
+              <label className="block mb-2 font-medium">Media Preview</label>
+              <div className="relative min-h-[300px] border rounded-lg p-4">
+                {currentQuestion.mediaItems.map((item) => (
+                  <Rnd
+                    key={item.id}
+                    default={{
+                      x: item.position.x,
+                      y: item.position.y,
+                      width: item.width,
+                      height: item.height,
+                    }}
+                    minWidth={100}
+                    minHeight={100}
+                    bounds="parent"
+                    onDragStop={(e, d) => {
+                      handleMediaResize(
+                        item.id,
+                        { width: item.width, height: item.height },
+                        { x: d.x, y: d.y }
+                      );
+                    }}
+                    onResizeStop={(e, direction, ref, delta, position) => {
+                      handleMediaResize(
+                        item.id,
+                        {
+                          width: parseInt(ref.style.width),
+                          height: parseInt(ref.style.height),
+                        },
+                        position
+                      );
+                    }}
+                    className="relative group"
+                  >
+                    <div className="relative w-full h-full">
+                      {item.type === "image" ? (
+                        <img
+                          src={item.url}
+                          alt="Preview"
+                          className="w-full h-full object-contain"
+                        />
+                      ) : (
+                        <video
+                          src={item.url}
+                          controls
+                          className="w-full h-full object-contain"
+                        />
+                      )}
+                      <button
+                        onClick={() => handleMediaDelete(item.id)}
+                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                      <div className="absolute bottom-2 right-2 p-1 bg-gray-800 text-white rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">
+                        {Math.round(item.width)} x {Math.round(item.height)}
+                      </div>
+                    </div>
+                  </Rnd>
+                ))}
+              </div>
+            </div>
+          )}
       </div>
     </div>
   );

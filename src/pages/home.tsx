@@ -1,254 +1,275 @@
 import React from "react";
-import { Col, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import avatar from "../assets/462261668_824775729828330_6660427130959853689_n.png";
+import logo from "../assets/logo.png";
+import search from "../assets/z5995353599012_1aa81823073c801aeb426bcaba313cc4.jpg";
 function Home() {
   return (
-    <div>
+    <div className="app-container" style={{ minHeight: "100vh" }}>
       <nav
         style={{
-          display: "flex",
-          alignItems: "center",
-          maxHeight: 65,
-          overflow: "hidden",
-          background: "#d3f1f5",
+          background: "white",
+          padding: "10px 20px",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+          position: "fixed",
+          width: "100%",
+          top: 0,
+          zIndex: 1000,
         }}
       >
-        <Row
-          style={{
-            display: "flex",
-            flex: 1,
-            justifyContent: "space-around",
-          }}
-        >
-          <Col
-            style={{
-              overflow: "hidden",
-              display: "flex",
-              alignItems: "center",
-              marginLeft: "3vw",
-            }}
-          >
-            <Link
-              to="/"
-              style={{
-                color: "#00FA9A",
-                fontSize: 25,
-                textDecoration: "none",
-                display: "flex",
-              }}
-            >
-              <img
-                src={avatar}
-                alt=""
-                style={{
-                  maxHeight: 65,
-                  maxWidth: 65,
-                  borderRadius: 50,
-                  margin: "auto",
-                }}
-              />
-              <h3
-                style={{
-                  color: "#00FA9A",
-                  fontSize: 25,
-                  alignContent: "center",
-                }}
-              >
-                TinyScholars
-              </h3>
-            </Link>
-          </Col>
-        </Row>
         <div
           style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
             display: "flex",
-            flex: 1,
-            justifyContent: "flex-end",
-            marginRight: 25,
+            justifyContent: "space-between",
             alignItems: "center",
           }}
         >
           <Link
-            to="/support"
+            to="/"
             style={{
-              fontSize: 15,
-              textDecoration: "none",
-              marginLeft: 10,
-              color: "darkviolet",
-            }}
-          >
-            Trợ giúp
-          </Link>
-          <Link
-            to="/login"
-            style={{
-              border: "1px solid",
-              background: "#11211",
-              marginLeft: 10,
               display: "flex",
               alignItems: "center",
-              padding: 5,
-              borderRadius: 10,
               textDecoration: "none",
-              color: "darkorange",
+              gap: "10px",
             }}
           >
-            Tài khoảng
             <img
-              src="https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?ga=GA1.1.2107631779.1727836364&semt=ais_hybrid"
-              alt="Person with sunglasses"
+              src={logo}
+              alt="TinyScholars Logo"
               style={{
-                maxHeight: 35,
-                maxWidth: 35,
-                borderRadius: 50,
-                marginLeft: 10,
+                width: "48px",
+                height: "48px",
+                borderRadius: "50%",
               }}
             />
+            <span
+              style={{
+                fontSize: "24px",
+                fontWeight: 600,
+                color: "#22d3ee",
+              }}
+            >
+              TinyScholars
+            </span>
           </Link>
+
+          {/* Search Bar */}
+          <div
+            style={{
+              flex: "1",
+              maxWidth: "600px",
+              margin: "0 48px",
+              position: "relative",
+            }}
+          >
+            <input
+              type="search"
+              placeholder="Tìm kiếm..."
+              style={{
+                width: "100%",
+                padding: "8px 16px",
+                paddingRight: "40px",
+                borderRadius: "24px",
+                border: "1px solid #e5e7eb",
+                outline: "none",
+                fontSize: "16px",
+              }}
+            />
+            <button
+              style={{
+                position: "absolute",
+                right: "12px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              <img src={search} alt="" style={{ width: "15px" }} />
+            </button>
+          </div>
+
+          {/* Auth Buttons */}
+          <div
+            style={{
+              display: "flex",
+              gap: "16px",
+              alignItems: "center",
+            }}
+          >
+            <Link
+              to="/login"
+              style={{
+                padding: "8px 24px",
+                borderRadius: "24px",
+                border: "1px solid #e5e7eb",
+                textDecoration: "none",
+                color: "#374151",
+                transition: "background-color 0.2s",
+              }}
+            >
+              Đăng nhập
+            </Link>
+            <Link
+              to="/register"
+              style={{
+                padding: "8px 24px",
+                borderRadius: "24px",
+                backgroundColor: "#a5f3fc",
+                textDecoration: "none",
+                color: "#374151",
+                transition: "background-color 0.2s",
+              }}
+            >
+              Đăng ký
+            </Link>
+          </div>
         </div>
       </nav>
+
+      {/* Hero Section */}
       <div
         style={{
-          background: "#E0F7FA",
-          flex: "none",
-          height: "40vh",
+          maxWidth: "1200px",
+          margin: "150px auto 60px",
+          textAlign: "center",
+          padding: "0 20px",
         }}
       >
-        <div
+        <h1
           style={{
+            fontSize: "48px",
+            fontWeight: "bold",
+            marginBottom: "32px",
+            lineHeight: "1.2",
+          }}
+        >
+          <span>Nơi </span>
+          <span style={{ color: "#22d3ee" }}>học tập </span>
+          <span>và </span>
+          <span style={{ color: "#fb923c" }}>chơi </span>
+          <span>lý tưởng cho bé!!!</span>
+        </h1>
+
+        <button
+          style={{
+            padding: "12px 32px",
+            fontSize: "18px",
+            fontWeight: 500,
+            backgroundColor: "#a5f3fc",
+            border: "none",
+            borderRadius: "24px",
+            cursor: "pointer",
             display: "flex",
-            flexDirection: "row",
-            justifySelf: "center",
+            alignItems: "center",
+            gap: "8px",
+            margin: "0 auto",
+            transition: "background-color 0.2s",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              marginTop: "7vh",
-            }}
-          >
-            <img
-              src={avatar}
-              alt=""
-              style={{
-                maxHeight: 70,
-                maxWidth: 70,
-                borderRadius: 50,
-                marginRight: "7%",
-                alignItems: "start",
-              }}
-            />
-            <h1
-              style={{
-                fontSize: 40,
-                maxWidth: "100%",
-                display: "flex",
-                flex: 1,
-                flexDirection: "column",
-              }}
-            >
-              <div style={{ display: "flex", width: "70%", gap: "10px" }}>
-                Nơi{" "}
-                <div
-                  style={{
-                    color: "blue",
-                    margin: "0 5px",
-                    width: "20vw",
-                    display: "flex",
-                    flexDirection: "row",
-                  }}
-                >
-                  {" "}
-                  học tập{" "}
-                </div>{" "}
-                và <div style={{ color: "orange", margin: "0 5px" }}>chơi</div>
-              </div>{" "}
-              <div style={{ marginLeft: "2vw" }}>lý tưởng cho bé!!</div>
-            </h1>
-          </div>
-        </div>
+          <Link to="/gameLayout" style={{ textDecoration: "none" }}>
+            Bắt đầu{" "}
+          </Link>
+          <span>▶</span>
+        </button>
+      </div>
+
+      {/* Subject Grid */}
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "0 60px",
+          position: "relative",
+          right: "50px",
+        }}
+      >
+        <button
+          style={{
+            position: "absolute",
+            left: "0",
+            top: "50%",
+            transform: "translateY(-50%)",
+            width: "40px",
+            height: "40px",
+            borderRadius: "50%",
+            border: "none",
+            backgroundColor: "white",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            cursor: "pointer",
+            zIndex: 1,
+          }}
+        >
+          ←
+        </button>
+
+        {/* Subject Cards */}
         <div
           style={{
-            justifyItems: "center",
-            margin: "3vh 0vw",
+            display: "grid",
+            gridTemplateColumns: "repeat(5, 1fr)",
+            gap: "24px",
+            padding: "0 20px",
           }}
         >
-          <h4
-            style={{
-              border: "1px",
-              padding: "10px",
-              borderRadius: 10,
-              cursor: "pointer",
-              background: "#8DEEEE",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            Bắt đầu {">"}
-          </h4>
-        </div>
-      </div>
-      <div style={{ background: "#E0F7FA", flex: 1, height: "52.5vh" }}>
-        <div style={{ marginLeft: "5vw" }}>
-          <h2 style={{ fontWeight: 400 }}> Trò chơi cho bé</h2>
-        </div>
-        <div style={{ marginLeft: "10vw", width: "80vw" }}>
-          <div
-            style={{
-              display: "flex",
-              marginTop: "5vh",
-              justifyContent: "space-around",
-            }}
-          >
-            <Link
-              to="/gameLayout"
+          {[
+            { name: "Toán học", color: "#d9f99d", icon: "🔢" },
+            { name: "Tiếng Việt", color: "#fef08a", icon: "📚" },
+            { name: "Ngoại ngữ", color: "#fdba74", icon: "🌎" },
+            { name: "Lịch sử", color: "#fca5a5", icon: "⏳" },
+            { name: "Địa lí", color: "#d8b4fe", icon: "🌍" },
+          ].map((subject, index) => (
+            <div
+              key={index}
               style={{
-                width: "14vw",
-                height: "23vh",
-                background: "#8DEEEE",
-                alignContent: "center",
-                borderRadius: 15,
-                justifyItems: "center",
+                backgroundColor: subject.color,
+                borderRadius: "24px",
+                padding: "24px",
+                height: "280px",
+                width: "200px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
                 cursor: "pointer",
-                textDecoration: "none",
+                transition: "transform 0.2s",
+                marginRight: "20px",
+                // ":hover": {
+                //   transform: "scale(1.05)",
+                // },
               }}
             >
-              <h5 style={{ fontWeight: 400 }}>Nhiều lựa chọn</h5>
-            </Link>
-            <Link
-              to="/gameLayout"
-              style={{
-                width: "14vw",
-                height: "23vh",
-                background: "#8DEEEE",
-                alignContent: "center",
-                borderRadius: 15,
-                justifyItems: "center",
-                cursor: "pointer",
-                textDecoration: "none",
-              }}
-            >
-              <h5 style={{ fontWeight: 400 }}>Đúng / Sai</h5>
-            </Link>
-            <Link
-              to="/gameLayout"
-              style={{
-                width: "14vw",
-                height: "23vh",
-                background: "#8DEEEE",
-                alignContent: "center",
-                borderRadius: 15,
-                justifyItems: "center",
-                cursor: "pointer",
-                textDecoration: "none",
-              }}
-            >
-              <h5 style={{ fontWeight: 400 }}>Lật thẻ</h5>
-            </Link>
-          </div>
+              <span style={{ fontSize: "36px", marginBottom: "16px" }}>
+                {subject.icon}
+              </span>
+              <h3 style={{ fontSize: "20px", fontWeight: 500 }}>
+                {subject.name}
+              </h3>
+            </div>
+          ))}
         </div>
+
+        {/* Navigation Arrow Right */}
+        <button
+          style={{
+            position: "absolute",
+            right: "-8.5vw",
+            top: "50%",
+            transform: "translateY(-50%)",
+            width: "40px",
+            height: "40px",
+            borderRadius: "50%",
+            border: "none",
+            backgroundColor: "white",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            cursor: "pointer",
+            zIndex: 1,
+          }}
+        >
+          →
+        </button>
       </div>
     </div>
   );

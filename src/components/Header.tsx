@@ -1,132 +1,106 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Col, Row } from "react-bootstrap";
-
+import logo from "../assets/logo.png";
+import search from "../assets/z5995353599012_1aa81823073c801aeb426bcaba313cc4.jpg";
 const Header: React.FC = () => {
   return (
-    <div>
+    <div style={{}}>
       <nav
         style={{
-          display: "flex",
-          background: "gray",
-          alignItems: "center",
-          padding: 10,
+          background: "white",
+          padding: "10px 20px",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+          position: "fixed",
+          width: "100%",
+          top: 0,
+          zIndex: 1000,
         }}
       >
-        <Row
+        <div
           style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
             display: "flex",
-            flex: 1,
+            justifyContent: "space-between",
             alignItems: "center",
-            justifyContent: "space-around",
           }}
         >
-          <Col>
-            <Link
-              to="/"
+          {/* Logo Section */}
+          <Link
+            to="/home"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              textDecoration: "none",
+              gap: "10px",
+            }}
+          >
+            <img
+              src={logo}
+              alt="TinyScholars Logo"
               style={{
-                color: "white",
-                fontSize: 25,
-                textDecoration: "none",
+                width: "48px",
+                height: "48px",
+                borderRadius: "50%",
+              }}
+            />
+            <span
+              style={{
+                fontSize: "24px",
+                fontWeight: 600,
+                color: "#22d3ee",
               }}
             >
               TinyScholars
-            </Link>
-          </Col>
-          <Col>
-            <Link
-              to="/FeaturedGames"
-              style={{
-                color: "white",
-                fontSize: 18,
-                textDecoration: "none",
-              }}
-            >
-              Trò chơi
-            </Link>
-          </Col>
-          <Col>
-            <Link
-              to="/business"
-              style={{
-                color: "white",
-                fontSize: 18,
-                textDecoration: "none",
-              }}
-            >
-              Doanh nghiệp
-            </Link>
-          </Col>
-          <Col>
-            <Link
-              to="/PackagesAndPrices"
-              style={{
-                color: "white",
-                fontSize: 18,
-                textDecoration: "none",
-              }}
-            >
-              Gói và mức giá
-            </Link>
-          </Col>
-          <Col>
-            <Link
-              to="/home"
-              style={{
-                color: "white",
-                fontSize: 18,
-                textDecoration: "none",
-              }}
-            >
-              home
-            </Link>
-          </Col>
-        </Row>
-        <div
-          style={{
-            display: "flex",
-            flex: 1,
-            justifyContent: "flex-end",
-            marginRight: 25,
-            alignItems: "center",
-          }}
-        >
-          <Link
-            to="/support"
-            style={{
-              color: "white",
-              fontSize: 15,
-              textDecoration: "none",
-              marginLeft: 10,
-            }}
-          >
-            Trợ giúp
+            </span>
           </Link>
-          <Link
-            to="/login"
+
+          {/* Search Bar */}
+          <div
             style={{
-              border: "1px solid",
-              background: "#11211",
-              marginLeft: 10,
-              display: "flex",
-              alignItems: "center",
-              padding: 5,
-              borderRadius: 10,
-              textDecoration: "none",
+              flex: "1",
+              maxWidth: "600px",
+              margin: "0 48px",
+              position: "relative",
             }}
           >
-            Tài khoảng
-            <img
-              src="https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?ga=GA1.1.2107631779.1727836364&semt=ais_hybrid"
-              alt="Person with sunglasses"
+            <input
+              type="search"
+              placeholder="Tìm kiếm..."
               style={{
-                maxHeight: 35,
-                maxWidth: 35,
-                borderRadius: 20,
-                marginLeft: 10,
+                width: "100%",
+                padding: "8px 16px",
+                paddingRight: "40px",
+                borderRadius: "24px",
+                border: "1px solid #e5e7eb",
+                outline: "none",
+                fontSize: "16px",
               }}
             />
-          </Link>
+            <button
+              style={{
+                position: "absolute",
+                right: "12px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              <img src={search} alt="" style={{ width: "15px" }} />
+            </button>
+          </div>
+
+          {/* Auth Buttons */}
+          <div
+            style={{
+              display: "flex",
+              gap: "16px",
+              alignItems: "center",
+            }}
+          ></div>
         </div>
       </nav>
     </div>

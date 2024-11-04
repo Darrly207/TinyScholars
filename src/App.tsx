@@ -7,7 +7,7 @@ import Business from "./pages/business";
 import PackagesAndPrices from "./pages/packagesAndPrices";
 import FeaturedGames from "./pages/featuredGames";
 import LoginPage from "./pages/login";
-import SignUp from "./pages/signUp";
+import Signup from "./pages/signUp";
 import Support from "./pages/support";
 import Home from "./pages/home";
 
@@ -31,7 +31,7 @@ const App: React.FC = () => {
           <Route path="/PackagesAndPrices" element={<PackagesAndPrices />} />
           <Route path="/FeaturedGames" element={<FeaturedGames />} />
           <Route path="/Login" element={<LoginPage />} />
-          <Route path="/Signup" element={<SignUp />} />
+          <Route path="/Signup" element={<Signup />} />
           <Route path="/support" element={<Support />} />
           <Route path="/home" element={<Home />} />
           <Route path="/GameLayout" element={<GameLayout />} />

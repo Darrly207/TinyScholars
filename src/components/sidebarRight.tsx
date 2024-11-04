@@ -2,43 +2,36 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import SettingGame from "./settingGame";
 import TopicSettings from "./topic";
-import { GameSettings as GameSettingsType, Question } from "../types/game";
+import {
+  GameSettings,
+  GameSettings as GameSettingsType,
+  Question,
+} from "../types/game";
 import { ChevronLeft, ChevronRight } from "lucide-react"; // Import icons
 
 interface SidebarRightProps {
-  settings: GameSettingsType;
-  onSettingsChange: (settings: GameSettingsType) => void;
-  currentQuestion?: Question;
+  settings: GameSettings;
+  currentQuestion: Question | undefined;
+  onSettingsChange: (settings: GameSettings) => void;
   onQuestionUpdate?: (question: Question) => void;
+  settingShow: boolean;
 }
 
 const SidebarRight: React.FC<SidebarRightProps> = ({
   settings,
-  onSettingsChange,
   currentQuestion,
-  onQuestionUpdate,
+  onSettingsChange,
+  onQuestionUpdate = () => {}, // Provide a default no-op function
+  settingShow,
 }) => {
   const [showSideBar, setShowSideBar] = useState(true);
-  const [settingShow, setSettingShow] = useState(true);
-
   const handleSidebar = () => {
-    setSettingShow(true);
+    showSideBar ? setShowSideBar(false) : setShowSideBar(true);
   };
 
   if (!showSideBar) {
     return (
-      <div
-        style={{
-          width: "30px",
-          height: "100vh",
-          background: "#C0C0C0",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-        }}
-        onClick={() => setShowSideBar(true)}
-      >
+      <div onClick={() => setShowSideBar(true)}>
         <ChevronLeft size={20} />
       </div>
     );
@@ -52,7 +45,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           borderRadius: 5,
           padding: 20,
           justifyContent: "space-around",
-          background: "#808080",
           overflow: "hidden",
         }}
       >
@@ -60,17 +52,17 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           onClick={handleSidebar}
           style={{
             ...styles.sidebarButton,
-            backgroundColor: settingShow ? "#606060" : undefined,
+            backgroundColor: settingShow ? "#00FFFF" : undefined,
             color: "black",
           }}
         >
           Cài đặt game
         </button>
         <button
-          onClick={() => setSettingShow(false)}
+          onClick={() => handleSidebar()}
           style={{
             ...styles.sidebarButton,
-            backgroundColor: !settingShow ? "#606060" : undefined,
+            backgroundColor: !settingShow ? "#00FFFF" : undefined,
             color: "black",
           }}
         >
@@ -79,19 +71,20 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
       </div>
       <div
         style={{
-          background: "#C0C0C0",
+          background: "white",
           height: "calc(100% - 80px)",
           display: "flex",
           padding: "20px",
+          borderRadius: 5,
         }}
       >
-        <div style={{ width: "100%" }}>
+        <div style={{ width: "100%", background: "white" }}>
           {settingShow ? (
             <SettingGame
+              currentQuestion={currentQuestion}
+              onQuestionUpdate={onQuestionUpdate}
               settings={settings}
               onSettingsChange={onSettingsChange}
-              currentQuestion={currentQuestion!}
-              onQuestionUpdate={onQuestionUpdate!}
             />
           ) : (
             <TopicSettings

@@ -22,11 +22,14 @@ const Navbar: React.FC = (onToggleFullscreen) => {
   };
 
   return (
-    <div className="navbar" style={{ background: "#C0C0C0" }}>
-      <div>
-        <Logo />
-      </div>
-      <Link to="/start" style={{ marginLeft: "10vw", textDecoration: "none" }}>
+    <div
+      className="navbar"
+      style={{
+        background: "#C0C0C0",
+        display: "flex",
+      }}
+    >
+      <Link to="/start" style={{ marginLeft: "40vw", textDecoration: "none" }}>
         <h2>Bắt Đầu</h2>
       </Link>
 

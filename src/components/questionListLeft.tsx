@@ -18,7 +18,7 @@ const QuestionList: React.FC<QuestionListProps> = ({
   onDeleteQuestion,
 }) => {
   return (
-    <div style={{ background: "#C0C0C0", borderRadius: 7, height: "100%" }}>
+    <div style={{ background: "white", borderRadius: 7, height: "100%" }}>
       <div
         style={{
           display: "flex",
@@ -71,7 +71,7 @@ const QuestionList: React.FC<QuestionListProps> = ({
             >
               <Trash2 size={16} />
             </button>
-            <span style={{ cursor: "pointer" }}>Question {question.id}</span>
+            <span style={{ cursor: "pointer" }}>Câu hỏi {question.id}</span>
           </div>
         ))}
       </div>
