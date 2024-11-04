@@ -1,7 +1,7 @@
 import React from "react";
 
 function Support() {
-  return <div>support</div>;
+  return <div>hi</div>;
 }
 
 export default Support;
