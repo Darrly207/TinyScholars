@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Rnd } from "react-rnd";
-import { X } from "lucide-react";
+import { X, Image as ImageIcon } from "lucide-react";
 import Draggable from "react-draggable";
-
+import imgBackground from "../assets/background1.png";
 interface MediaItem {
   id: string;
   url: string;
@@ -10,6 +10,7 @@ interface MediaItem {
   width: number;
   height: number;
   position: { x: number; y: number };
+  isBackground?: boolean;
 }
 
 interface MultipleChoiceGame {
@@ -18,20 +19,37 @@ interface MultipleChoiceGame {
   options: string[];
   correctAnswer: number;
   mediaItems: MediaItem[];
+  backgroundImage?: string;
 }
 
 interface MultipleChoiceProps {
   question: MultipleChoiceGame;
   onQuestionUpdate: (question: MultipleChoiceGame) => void;
   standalone?: boolean;
+  background?: string;
 }
 
 const MultipleChoice: React.FC<MultipleChoiceProps> = ({
   question,
   onQuestionUpdate,
 }) => {
-  const [currentQuestion, setCurrentQuestion] = useState(2);
-  const [totalQuestions, setTotalQuestions] = useState(14);
+  const [selectedMediaId, setSelectedMediaId] = useState<string | null>(null);
+
+  const [draggingFromContainer, setDraggingFromContainer] = useState(false);
+
+  useEffect(() => {
+    console.log("Question background:", question.backgroundImage);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.key === "Delete" || e.key === "Backspace") && selectedMediaId) {
+        handleMediaDelete(selectedMediaId);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedMediaId]);
 
   const handleMediaResize = (
     id: string,
@@ -49,19 +67,66 @@ const MultipleChoice: React.FC<MultipleChoiceProps> = ({
   };
 
   const handleMediaDelete = (id: string) => {
+    const mediaItem = question.mediaItems.find((item) => item.id === id);
     const updatedMediaItems = question.mediaItems.filter(
       (item) => item.id !== id
     );
+
     onQuestionUpdate({
       ...question,
       mediaItems: updatedMediaItems,
+      backgroundImage: mediaItem?.isBackground
+        ? undefined
+        : question.backgroundImage,
     });
+    setSelectedMediaId(null);
+  };
+
+  const handleSetAsBackground = (id: string) => {
+    const mediaItem = question.mediaItems.find((item) => item.id === id);
+    if (mediaItem && mediaItem.type === "image") {
+      // Reset any existing background image flags
+      const updatedMediaItems = question.mediaItems.map((item) => ({
+        ...item,
+        isBackground: item.id === id,
+      }));
+
+      onQuestionUpdate({
+        ...question,
+        mediaItems: updatedMediaItems,
+        backgroundImage: mediaItem.url,
+      });
+    }
+  };
+
+  const handleDragStart = () => {
+    setDraggingFromContainer(true);
+  };
+
+  const handleDragStop = (id: string, position: { x: number; y: number }) => {
+    setDraggingFromContainer(false);
+    handleMediaResize(
+      id,
+      {
+        width: question.mediaItems.find((item) => item.id === id)?.width || 200,
+        height:
+          question.mediaItems.find((item) => item.id === id)?.height || 200,
+      },
+      position
+    );
   };
 
   if (!question) return null;
 
   return (
-    <div className="game-container">
+    <div
+      className="game-container"
+      style={{
+        backgroundImage: question.backgroundImage
+          ? `url(${question.backgroundImage})`
+          : `url(${imgBackground})`, // Replace with your fallback image URL
+      }}
+    >
       <Draggable>
         <div className="question-header">
           <input
@@ -115,64 +180,91 @@ const MultipleChoice: React.FC<MultipleChoiceProps> = ({
           ))}
         </div>
 
-        <div className="media-container">
-          {question.mediaItems.map((item) => (
-            <Rnd
-              key={item.id}
-              default={{
-                x: item.position.x,
-                y: item.position.y,
-                width: item.width,
-                height: item.height,
-              }}
-              minWidth={100}
-              minHeight={100}
-              bounds="parent"
-              onDragStop={(e, d) => {
-                handleMediaResize(
-                  item.id,
-                  { width: item.width, height: item.height },
-                  { x: d.x, y: d.y }
-                );
-              }}
-              onResizeStop={(e, direction, ref, delta, position) => {
-                handleMediaResize(
-                  item.id,
-                  {
-                    width: parseInt(ref.style.width),
-                    height: parseInt(ref.style.height),
-                  },
-                  position
-                );
-              }}
-              className="relative group"
-            >
-              <div className="relative w-full h-full">
-                {item.type === "image" ? (
-                  <img
-                    src={item.url}
-                    alt="Preview"
-                    className="w-full h-full object-contain"
-                  />
-                ) : (
-                  <video
-                    src={item.url}
-                    controls
-                    className="w-full h-full object-contain"
-                  />
-                )}
-                <button
-                  onClick={() => handleMediaDelete(item.id)}
-                  className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+        <div
+          className="media-container"
+          style={{ overflow: "hidden", width: "40%", height: "40%" }}
+        >
+          {question.mediaItems.map(
+            (item) =>
+              !item.isBackground && (
+                <Rnd
+                  key={item.id}
+                  default={{
+                    x: item.position.x,
+                    y: item.position.y,
+                    width: item.width,
+                    height: item.height,
+                  }}
+                  minWidth={100}
+                  minHeight={100}
+                  bounds={draggingFromContainer ? "parent" : "window"}
+                  enableResizing={{
+                    top: false,
+                    right: false,
+                    bottom: false,
+                    left: false,
+                    topRight: true,
+                    bottomRight: true,
+                    bottomLeft: true,
+                    topLeft: true,
+                  }}
+                  onDragStart={handleDragStart}
+                  onDragStop={(e, d) =>
+                    handleDragStop(item.id, { x: d.x, y: d.y })
+                  }
+                  onResizeStop={(e, direction, ref, delta, position) => {
+                    handleMediaResize(
+                      item.id,
+                      {
+                        width: parseInt(ref.style.width),
+                        height: parseInt(ref.style.height),
+                      },
+                      position
+                    );
+                  }}
+                  className={`relative group ${
+                    selectedMediaId === item.id ? "ring-2 ring-blue-500" : ""
+                  }`}
+                  onDoubleClick={() => setSelectedMediaId(item.id)}
                 >
-                  <X className="w-4 h-4" />
-                </button>
-                <div className="absolute bottom-2 right-2 p-1 bg-gray-800 text-white rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">
-                  {Math.round(item.width)} x {Math.round(item.height)}
-                </div>
-              </div>
-            </Rnd>
-          ))}
+                  <div className="relative w-full h-full">
+                    {item.type === "image" ? (
+                      <img
+                        src={item.url}
+                        alt="Media Item"
+                        className="w-full h-full object-contain"
+                      />
+                    ) : (
+                      <video
+                        src={item.url}
+                        controls
+                        className="w-full h-full object-contain"
+                      />
+                    )}
+                    <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {item.type === "image" && (
+                        <button
+                          onClick={() => handleSetAsBackground(item.id)}
+                          className="p-1 bg-blue-500 text-white rounded-full"
+                          title="Set as background"
+                        >
+                          <ImageIcon className="w-4 h-4" />
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleMediaDelete(item.id)}
+                        className="p-1 bg-red-500 text-white rounded-full"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="absolute bottom-2 right-2 p-1 bg-gray-800 text-white rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">
+                      {Math.round(item.width)} x {Math.round(item.height)}
+                    </div>
+                  </div>
+                </Rnd>
+              )
+          )}
           {question.mediaItems.length === 0 && (
             <div className="flex items-center justify-center h-full text-gray-400">
               No media added yet
@@ -181,16 +273,13 @@ const MultipleChoice: React.FC<MultipleChoiceProps> = ({
         </div>
       </div>
 
-      <div className="question-counter">
-        {currentQuestion} / {totalQuestions}
-      </div>
-
       <style>{`
         .game-container {
           width: 100%;
           height: 100vh;
-          background: url('/nature-background.jpg') no-repeat center center;
           background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
           padding: 20px;
           position: relative;
           font-family: 'Comic Sans MS', cursive;
@@ -204,6 +293,7 @@ const MultipleChoice: React.FC<MultipleChoiceProps> = ({
           margin-bottom: 30px;
           cursor: move;
           width: fit-content;
+          z-index: 50;
         }
 
         .question-input {
@@ -225,6 +315,8 @@ const MultipleChoice: React.FC<MultipleChoiceProps> = ({
           justify-content: space-between;
           gap: 30px;
           margin-top: 20px;
+          z-index: 40;
+          position: relative;
         }
 
         .options-container {
@@ -279,9 +371,9 @@ const MultipleChoice: React.FC<MultipleChoiceProps> = ({
         }
 
         .question-counter {
-          position: fixed;
-          bottom: 20px;
-          right: 30vw;
+          float: right;
+          margin-top: 20px;
+          width: fit-content;
           background: #ff7f50;
           color: white;
           padding: 10px 20px;
@@ -289,17 +381,19 @@ const MultipleChoice: React.FC<MultipleChoiceProps> = ({
           font-size: 20px;
           font-weight: bold;
           box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          z-index: 50;
+          position: relative;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
           .game-content {
             flex-direction: column;
+            align-items: center;
           }
 
-          .options-container,
-          .media-container {
-            width: 100%;
+          .media-container, .options-container {
+            width: 80%;
           }
         }
       `}</style>

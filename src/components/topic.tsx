@@ -1,115 +1,126 @@
-import React from "react";
-import { Image } from "lucide-react";
-import { GameSettings } from "../types/game";
+import React, { useState } from "react";
+import { Upload } from "lucide-react";
+import {
+  GameSettings as GameSettingsType,
+  Question,
+  MediaItem,
+} from "../types/game";
+import backgroundImages from "../assets/backgroundlogina.png";
+interface Topic {
+  id: string;
+  name: string;
+  image: string;
+  backgroundStyle: string;
+}
+
+const defaultTopics: Topic[] = [
+  {
+    id: "default",
+    name: "Default",
+    image: backgroundImages,
+    backgroundStyle: "bg-white",
+  },
+  {
+    id: "custom",
+    name: "Custom",
+    image: "/api/placeholder/160/160",
+    backgroundStyle: "",
+  },
+];
 
 interface TopicSettingsProps {
-  settings: GameSettings;
-  onSettingsChange: (settings: GameSettings) => void;
+  settings: GameSettingsType;
+  onSettingsChange: (settings: GameSettingsType) => void;
+  currentQuestion: Question | undefined;
+  onQuestionUpdate: (question: Question) => void;
 }
 
 const TopicSettings: React.FC<TopicSettingsProps> = ({
   settings,
   onSettingsChange,
+  currentQuestion,
+  onQuestionUpdate,
 }) => {
+  const [topics, setTopics] = useState(defaultTopics);
+  const [customImage, setCustomImage] = useState<string | null>(null);
+
+  const handleTopicSelect = (topicId: string) => {
+    onSettingsChange({
+      ...settings,
+      background: topicId as GameSettingsType["background"],
+    });
+
+    if (currentQuestion) {
+      const selectedTopic = topics.find((t) => t.id === topicId);
+      onQuestionUpdate({
+        ...currentQuestion,
+        background: selectedTopic?.backgroundStyle || "",
+        customBackground:
+          topicId === "custom" ? customImage ?? undefined : undefined,
+      });
+    }
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const imageUrl = reader.result as string;
+        setCustomImage(imageUrl);
+
+        // Cập nhật custom topic với hình ảnh mới
+        const updatedTopics = topics.map((topic) =>
+          topic.id === "custom" ? { ...topic, image: imageUrl } : topic
+        );
+        setTopics(updatedTopics);
+
+        // Cập nhật background cho câu hỏi hiện tại với hình ảnh tùy chỉnh
+        handleTopicSelect("custom");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
-    <div className="topic-settings">
-      <h3 className="settings-title">Topic & Background</h3>
-
-      <div className="background-selector">
-        <select
-          value={settings.background}
-          onChange={(e) =>
-            onSettingsChange({ ...settings, background: e.target.value as any })
-          }
-          className="background-select"
-        >
-          <option value="default">Default Theme</option>
-          <option value="nature">Nature Theme</option>
-          <option value="space">Space Theme</option>
-          <option value="abstract">Abstract Theme</option>
-        </select>
+    <div className="p-4" style={{ maxHeight: "80vh", overflowY: "auto" }}>
+      <h3 className="text-lg font-semibold mb-4">Select Theme</h3>
+      <div className="grid grid-cols-2 gap-4">
+        {topics.map((topic) => (
+          <div
+            key={topic.id}
+            className={`relative cursor-pointer rounded-lg overflow-hidden transition-all duration-200 ${
+              settings.background === topic.id
+                ? "ring-2 ring-cyan-500 shadow-lg"
+                : "hover:shadow-md"
+            }`}
+            onClick={() => handleTopicSelect(topic.id)}
+          >
+            <div
+              className="aspect-square relative"
+              style={{ cursor: "pointer" }}
+            >
+              <img
+                src={topic.image}
+                alt={topic.name}
+                className="w-full h-full object-cover"
+              />
+              {topic.id === "custom" && (
+                <label className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 text-white cursor-pointer">
+                  <Upload className="w-8 h-8 mb-2" />
+                  <span className="text-sm">Upload Custom</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                </label>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
-
-      <style>{`
-        .topic-settings {
-          padding: 16px;
-          background: #ffffff;
-          border-radius: 10px;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .settings-title {
-          color: #2e3856;
-          font-size: 1.25rem;
-          font-weight: 600;
-          margin-bottom: 1.5rem;
-          padding-bottom: 0.5rem;
-          border-bottom: 2px solid #e8eaf2;
-        }
-
-        .background-selector {
-          position: relative;
-        }
-
-        .background-selector::after {
-          content: '';
-          position: absolute;
-          right: 12px;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 0;
-          height: 0;
-          border-left: 6px solid transparent;
-          border-right: 6px solid transparent;
-          border-top: 6px solid #6b7280;
-          pointer-events: none;
-        }
-
-        .background-select {
-          width: 100%;
-          padding: 12px 16px;
-          font-size: 1rem;
-          border: 2px solid #e8eaf2;
-          border-radius: 8px;
-          background: #f8fafc;
-          color: #4b5563;
-          appearance: none;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-
-        .background-select:hover {
-          border-color: #c7d2fe;
-          background: #f1f5f9;
-        }
-
-        .background-select:focus {
-          outline: none;
-          border-color: #818cf8;
-          box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1);
-        }
-
-        .background-select option {
-          padding: 12px;
-          background: white;
-        }
-
-        @media (max-width: 768px) {
-          .topic-settings {
-            padding: 12px;
-          }
-
-          .settings-title {
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
-          }
-
-          .background-select {
-            padding: 10px 14px;
-            font-size: 0.95rem;
-          }
-        }
-      `}</style>
     </div>
   );
 };

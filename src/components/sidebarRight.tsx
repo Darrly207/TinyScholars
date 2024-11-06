@@ -21,24 +21,30 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
   settings,
   currentQuestion,
   onSettingsChange,
-  onQuestionUpdate = () => {}, // Provide a default no-op function
-  settingShow,
+  onQuestionUpdate = () => {},
+  settingShow = true,
 }) => {
   const [showSideBar, setShowSideBar] = useState(true);
-  const handleSidebar = () => {
-    showSideBar ? setShowSideBar(false) : setShowSideBar(true);
+  const [isSettingView, setIsSettingView] = useState(settingShow);
+
+  const handleSidebarToggle = () => {
+    setShowSideBar(!showSideBar);
+  };
+
+  const handleViewToggle = (view: boolean) => {
+    setIsSettingView(view);
   };
 
   if (!showSideBar) {
     return (
-      <div onClick={() => setShowSideBar(true)}>
+      <div onClick={handleSidebarToggle} style={{ cursor: "pointer" }}>
         <ChevronLeft size={20} />
       </div>
     );
   }
 
   return (
-    <div style={{ height: "100vh", width: "100%" }}>
+    <div style={{ height: "100vh", maxWidth: "22vw" }}>
       <div
         style={{
           display: "flex",
@@ -49,20 +55,20 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
         }}
       >
         <button
-          onClick={handleSidebar}
+          onClick={() => handleViewToggle(true)}
           style={{
             ...styles.sidebarButton,
-            backgroundColor: settingShow ? "#00FFFF" : undefined,
+            backgroundColor: isSettingView ? "#00FFFF" : undefined,
             color: "black",
           }}
         >
           Cài đặt game
         </button>
         <button
-          onClick={() => handleSidebar()}
+          onClick={() => handleViewToggle(false)}
           style={{
             ...styles.sidebarButton,
-            backgroundColor: !settingShow ? "#00FFFF" : undefined,
+            backgroundColor: !isSettingView ? "#00FFFF" : undefined,
             color: "black",
           }}
         >
@@ -79,7 +85,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
         }}
       >
         <div style={{ width: "100%", background: "white" }}>
-          {settingShow ? (
+          {isSettingView ? (
             <SettingGame
               currentQuestion={currentQuestion}
               onQuestionUpdate={onQuestionUpdate}
@@ -91,10 +97,12 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
               settings={settings}
               onSettingsChange={onSettingsChange}
               key={settings.gameType}
+              currentQuestion={currentQuestion}
+              onQuestionUpdate={onQuestionUpdate}
             />
           )}
         </div>
-        <div
+        {/* <div
           style={{
             width: "30px",
             display: "flex",
@@ -102,10 +110,10 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
             justifyContent: "center",
             cursor: "pointer",
           }}
-          onClick={() => setShowSideBar(false)}
+          onClick={handleSidebarToggle}
         >
           <ChevronRight size={20} />
-        </div>
+        </div> */}
       </div>
     </div>
   );

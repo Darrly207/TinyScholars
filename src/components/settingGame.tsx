@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Upload, X } from "lucide-react";
-import { Rnd } from "react-rnd"; // For resizable and draggable functionality
+import { Upload } from "lucide-react";
 import type {
   GameSettings as GameSettingsType,
   Question,
@@ -119,43 +118,10 @@ const SettingGame: React.FC<SettingGameProps> = ({
     }
   };
 
-  // Handle media resize and position
-  const handleMediaResize = (
-    id: string,
-    size: { width: number; height: number },
-    position: { x: number; y: number }
-  ) => {
-    if (currentQuestion) {
-      const updatedMediaItems = currentQuestion.mediaItems.map((item) =>
-        item.id === id ? { ...item, ...size, position } : item
-      );
-
-      const updatedQuestion = {
-        ...currentQuestion,
-        mediaItems: updatedMediaItems,
-      };
-      onQuestionUpdate(updatedQuestion);
-    }
-  };
-
-  // Handle media deletion
-  const handleMediaDelete = (id: string) => {
-    if (currentQuestion) {
-      const updatedMediaItems = currentQuestion.mediaItems.filter(
-        (item) => item.id !== id
-      );
-      const updatedQuestion = {
-        ...currentQuestion,
-        mediaItems: updatedMediaItems,
-      };
-      onQuestionUpdate(updatedQuestion);
-    }
-  };
-
   return (
     <div
       className="p-4 border rounded bg-gray-50"
-      style={{ overflow: "hidden" }}
+      style={{ overflow: "hidden", maxWidth: "100%" }}
     >
       <div className="space-y-4">
         {/* Game Type Selection */}
@@ -213,73 +179,6 @@ const SettingGame: React.FC<SettingGameProps> = ({
             </p>
           </div>
         </div>
-
-        {/* Media Preview Section */}
-        {currentQuestion?.mediaItems &&
-          currentQuestion.mediaItems.length > 0 && (
-            <div className="mt-4">
-              <label className="block mb-2 font-medium">Media Preview</label>
-              <div className="relative min-h-[300px] border rounded-lg p-4">
-                {currentQuestion.mediaItems.map((item) => (
-                  <Rnd
-                    key={item.id}
-                    default={{
-                      x: item.position.x,
-                      y: item.position.y,
-                      width: item.width,
-                      height: item.height,
-                    }}
-                    minWidth={100}
-                    minHeight={100}
-                    bounds="parent"
-                    onDragStop={(e, d) => {
-                      handleMediaResize(
-                        item.id,
-                        { width: item.width, height: item.height },
-                        { x: d.x, y: d.y }
-                      );
-                    }}
-                    onResizeStop={(e, direction, ref, delta, position) => {
-                      handleMediaResize(
-                        item.id,
-                        {
-                          width: parseInt(ref.style.width),
-                          height: parseInt(ref.style.height),
-                        },
-                        position
-                      );
-                    }}
-                    className="relative group"
-                  >
-                    <div className="relative w-full h-full">
-                      {item.type === "image" ? (
-                        <img
-                          src={item.url}
-                          alt="Preview"
-                          className="w-full h-full object-contain"
-                        />
-                      ) : (
-                        <video
-                          src={item.url}
-                          controls
-                          className="w-full h-full object-contain"
-                        />
-                      )}
-                      <button
-                        onClick={() => handleMediaDelete(item.id)}
-                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                      <div className="absolute bottom-2 right-2 p-1 bg-gray-800 text-white rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">
-                        {Math.round(item.width)} x {Math.round(item.height)}
-                      </div>
-                    </div>
-                  </Rnd>
-                ))}
-              </div>
-            </div>
-          )}
       </div>
     </div>
   );

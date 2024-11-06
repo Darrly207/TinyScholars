@@ -6,7 +6,7 @@ import IndexPage from "./pages";
 import Business from "./pages/business";
 import PackagesAndPrices from "./pages/packagesAndPrices";
 import FeaturedGames from "./pages/featuredGames";
-import LoginPage from "./pages/login";
+import LoginPage from "./pages/signIn";
 import Signup from "./pages/signUp";
 import Support from "./pages/support";
 import Home from "./pages/home";
@@ -26,7 +26,7 @@ const App: React.FC = () => {
           location.pathname !== "/GameLayout" && <Header />}
 
         <Routes>
-          <Route path="/" element={<IndexPage />} />
+          <Route path="/" element={<LoginPage />} />
           <Route path="/Business" element={<Business />} />
           <Route path="/PackagesAndPrices" element={<PackagesAndPrices />} />
           <Route path="/FeaturedGames" element={<FeaturedGames />} />

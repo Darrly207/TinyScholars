@@ -4,13 +4,14 @@ export type GameType =
   | "memoryCard"
   | "timeline"
   | "fillInBlank";
-export type Background = "default" | "nature" | "space" | "abstract";
 
 export interface BaseQuestion {
   mediaItems: MediaItem[];
   id: number;
   text: string;
   type: GameType;
+  background?: string;
+  customBackground?: string;
 }
 
 export interface MultipleChoiceGame extends BaseQuestion {
@@ -50,8 +51,8 @@ export type Question =
 
 export interface GameSettings {
   gameType: GameType;
-  background: Background;
-  theme: "light" | "dark";
+  background: string;
+  theme: "light" | "#c07900";
 }
 export interface MediaItem {
   id: string;

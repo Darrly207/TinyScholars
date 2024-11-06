@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import QuestionList from "../components/questionListLeft";
 import {
   GameSettings as GameSettingsType,
@@ -16,13 +16,22 @@ import MultipleChoice from "../components/multipleChoice";
 import { FullscreenContext } from "../context/fullScreenContext";
 import TrueFalseQuest from "../components/trueFalseQuest";
 import FillInBlankQuest from "../components/fillInBlank";
+import background1 from "../assets/background1.png";
 export type GameType = "multipleChoice" | "trueFalse" | "memoryCard";
 export type Background = "default" | "nature" | "space" | "abstract";
 
 const GameLayout: React.FC = () => {
   const { containerRef, isFullscreen, setIsFullscreen } =
     useContext(FullscreenContext);
+  const divRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (divRef.current) {
+      divRef.current.focus();
+    }
+  }, []);
   const [showSideBar, setShowSideBar] = useState(true);
+  const [currentQuestion, setCurrentQuestion] = useState(2);
+  const [totalQuestions, setTotalQuestions] = useState(14);
   const handleSidebar = () => {
     showSideBar ? setShowSideBar(false) : setShowSideBar(true);
   };
@@ -40,6 +49,8 @@ const GameLayout: React.FC = () => {
       correctAnswer: 1,
       type: "multipleChoice",
       mediaItems: [],
+      background: background1,
+      customBackground: "",
     } as MultipleChoiceGame,
     {
       id: 2,
@@ -48,6 +59,8 @@ const GameLayout: React.FC = () => {
       correctAnswer: 0,
       type: "trueFalse",
       mediaItems: [],
+      background: "",
+      customBackground: "",
     } as TrueFalse,
     {
       id: 3,
@@ -68,6 +81,8 @@ const GameLayout: React.FC = () => {
         },
       ],
       mediaItems: [],
+      background: "",
+      customBackground: "",
     } as MemoryCard,
   ]);
   const [trueFalseQuestion, setTrueFalseQuestion] = useState<TrueFalse[]>([
@@ -78,6 +93,8 @@ const GameLayout: React.FC = () => {
       correctAnswer: 1,
       type: "trueFalse",
       mediaItems: [],
+      background: "",
+      customBackground: "",
     } as TrueFalse,
   ]);
 
@@ -97,6 +114,8 @@ const GameLayout: React.FC = () => {
           correctAnswer: 0,
           type: "trueFalse",
           mediaItems: [],
+          background: background1,
+          customBackground: "",
         };
         setQuestions([...questions, newTFQuestion]);
         break;
@@ -108,6 +127,8 @@ const GameLayout: React.FC = () => {
           pairs: [],
           type: "memoryCard",
           mediaItems: [],
+          background: background1,
+          customBackground: "",
         };
         setQuestions([...questions, newMemoryQuestion]);
         break;
@@ -120,6 +141,8 @@ const GameLayout: React.FC = () => {
           correctAnswer: 0,
           type: "multipleChoice",
           mediaItems: [],
+          background: background1,
+          customBackground: "",
         };
         setQuestions([...questions, newMCQuestion]);
     }
@@ -203,6 +226,7 @@ const GameLayout: React.FC = () => {
             question={currentQuestion as MultipleChoiceGame}
             onQuestionUpdate={handleMultipleChoiceUpdate as any}
             standalone={false}
+            background={questions[currentQuestionId - 1].background}
           />
         );
       case "trueFalse":
@@ -234,9 +258,9 @@ const GameLayout: React.FC = () => {
   return (
     <div
       style={{
-        height: "95vh",
+        height: "90vh",
         margin: "70px 0px 0px 0px",
-        width: "100vw",
+        maxWidth: "100vw",
         overflow: "hidden",
       }}
     >
@@ -255,18 +279,37 @@ const GameLayout: React.FC = () => {
         {/* Main Content */}
         <div
           style={{
-            overflow: "hidden",
             flex: 7,
             width: "60vw",
-            height: "100vh",
+            height: "80vh",
             alignItems: "center",
             justifyContent: "center",
+            border: "1px solid #e5e7eb",
+            position: "relative",
           }}
           ref={containerRef}
           onKeyDown={handleKeyDown}
-          onMouseDown={handleMouseDown}
+          tabIndex={0}
+          // onMouseDown={handleMouseDown}
         >
           {renderGameComponent()}
+          <div
+            style={{
+              position: "absolute", // Thay đổi từ relative sang absolute
+              right: "20px", // Căn phải
+              bottom: "20px", // Căn dưới
+              width: "fit-content",
+              background: "#ff7f50",
+              color: "white",
+              padding: "10px 20px",
+              borderRadius: "20px",
+              fontSize: "20px",
+              fontWeight: "bold",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+            }}
+          >
+            {currentQuestionId} / {questions.length}
+          </div>
         </div>
 
         {/* Right Sidebar */}
@@ -277,7 +320,7 @@ const GameLayout: React.FC = () => {
               onSettingsChange={setSettings}
               currentQuestion={getCurrentQuestion()}
               onQuestionUpdate={handleQuestionUpdate}
-              settingShow={true}
+              settingShow={false}
             />
           </div>
         </div>
