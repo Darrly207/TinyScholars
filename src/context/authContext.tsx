@@ -6,6 +6,7 @@ interface AuthContextType extends AuthState {
   login: (credentials: LoginCredentials) => Promise<void>;
   loginWithGoogle: (token: string) => Promise<void>;
   loginWithFacebook: (token: string) => Promise<void>;
+  // register: (user: any) => Promise<void>;
   logout: () => void;
 }
 
@@ -110,7 +111,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = async (credentials: LoginCredentials) => {
     try {
       const response = await axios.post<AuthResponse>(
-        "/api/auth/login",
+        "http://localhost:3000/api/auth/login",
+
         credentials
       );
       const { user, token, refreshToken } = response.data;
@@ -123,12 +125,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       throw error;
     }
   };
+  // const register = async () => {
+  //   try {
+  //     const response = await axios.post<AuthResponse>(
+  //       "http://localhost:3000/api/auth/login",
+  //       email:
+  //     );
+  //     const { user, token, refreshToken } = response.data;
+
+  //     localStorage.setItem("token", token);
+  //     localStorage.setItem("refreshToken", refreshToken);
+
+  //     dispatch({ type: "LOGIN_SUCCESS", payload: response.data });
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // };
 
   const loginWithGoogle = async (token: string) => {
     try {
-      const response = await axios.post<AuthResponse>("/api/auth/google", {
-        token,
-      });
+      const response = await axios.post<AuthResponse>(
+        "http://localhost:3000/api/auth/google",
+        {
+          token,
+        }
+      );
       const { user, token: authToken, refreshToken } = response.data;
 
       localStorage.setItem("token", authToken);
@@ -142,9 +163,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const loginWithFacebook = async (token: string) => {
     try {
-      const response = await axios.post<AuthResponse>("/api/auth/facebook", {
-        accessToken: token,
-      });
+      const response = await axios.post<AuthResponse>(
+        "http://localhost:3000/api/auth/facebook",
+        {
+          accessToken: token,
+        }
+      );
       const { user, token: authToken, refreshToken } = response.data;
 
       localStorage.setItem("token", authToken);

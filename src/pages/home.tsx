@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo1.png";
 import search from "../assets/z5995353599012_1aa81823073c801aeb426bcaba313cc4.jpg";
 function Home() {
   return (

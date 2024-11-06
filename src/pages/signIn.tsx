@@ -9,7 +9,7 @@ import facbook from "../assets/blue-white-sign-that-says-facebook_470458-570.avi
 import gmail from "../assets/gmail-logo-on-transparent-white-background-free-vector.jpg";
 import backgroundImage from "../assets/reflection.avif";
 import axios from "axios";
-import backgroundImage1 from "../assets/hinh1.png"
+import backgroundImage1 from "../assets/hinh1.png";
 
 interface GoogleLoginResponse {
   access_token: string;
@@ -65,12 +65,12 @@ const LoginPage: React.FC = () => {
 
     try {
       await login(credentials);
-      navigate("/");
+      navigate("/home");
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
         setError(
           err.response.data.message ||
-          "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin."
+            "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin."
         );
       } else {
         setError("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
@@ -125,7 +125,8 @@ const LoginPage: React.FC = () => {
             </h2>
           </div>
           <div style={{ marginLeft: "5%", marginRight: "10%" }}>
-            Dùng email hoặc dịch vụ khác để tiếp tục với Tiny, hoàn toàn miễn phí
+            Dùng email hoặc dịch vụ khác để tiếp tục với Tiny, hoàn toàn miễn
+            phí
           </div>
 
           <button
@@ -187,12 +188,12 @@ const LoginPage: React.FC = () => {
 const styles = {
   container: {
     backgroundImage: `url(${backgroundImage1})`,
-    height: '100vh',
+    height: "100vh",
     width: "100vw",
-    display: 'flex',
-    justifyContent: 'center',
-    backgroundSize: 'cover',
-    alignItems: 'center',
+    display: "flex",
+    justifyContent: "center",
+    backgroundSize: "cover",
+    alignItems: "center",
   },
   loginForm: {
     maxHeight: "65%",
@@ -200,7 +201,7 @@ const styles = {
     maxWidth: "80%",
     width: "80vh",
     background: "#DDDDDD",
-    alignItems: 'center',
+    alignItems: "center",
     display: "flex",
 
     marginTop: "5%",

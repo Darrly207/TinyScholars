@@ -1,181 +1,139 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import imgBackground from "../assets/z5995318488437_5d9b48a051ec3de542fcfd17166a8f0f.jpg";
-import logo from "../assets/logo.png";
+import imgBackground from "../assets/hinh1.png";
+import logo from "../assets/logo1.png";
 import search from "../assets/z5995353599012_1aa81823073c801aeb426bcaba313cc4.jpg";
 import eye from "../assets/z5995359982036_8f916b50aa1f59258171ad18fc8fe073.jpg";
+import { LoginCredentials } from "../types/auth";
+import { useAuth } from "../context/authContext";
+import axios from "axios";
+
+interface LoginError {
+  email?: string;
+  password?: string;
+  general?: string;
+}
+
 const Signup = () => {
+  const { login } = useAuth();
   const [isHovered, setIsHovered] = useState(false);
+  const [isHovered2, setIsHovered2] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<LoginError>({});
+  const [credentials, setCredentials] = useState<LoginCredentials>({
+    email: "",
+    password: "",
+  });
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  const validateForm = (): boolean => {
+    const newErrors: LoginError = {};
+
+    if (!credentials.email) {
+      newErrors.email = "Email là bắt buộc";
+    } else if (!/\S+@\S+\.\S+/.test(credentials.email)) {
+      newErrors.email = "Email không hợp lệ";
+    }
+
+    if (!credentials.password) {
+      newErrors.password = "Mật khẩu là bắt buộc";
+    } else if (credentials.password.length < 6) {
+      newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự";
+    }
+
+    setError(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setCredentials({ ...credentials, [name]: value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    setIsLoading(true);
+    setError({});
+
+    try {
+      await login(credentials);
+      navigate("/home");
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response) {
+        setError({
+          general: err.response.data.message || "Đăng nhập thất bại.",
+        });
+      } else {
+        setError({ general: "Đăng nhập thất bại." });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div style={styles.container}>
-      {/* <div style={styles.logoContainer}>
-        <img style={styles.logo} src={logo}></img>
-        <span style={styles.logoText}>TinyScholars</span>
-      </div> */}
-      <nav
-        style={{
-          background: "white",
-          padding: "10px 20px",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          position: "fixed",
-          width: "100%",
-          top: 0,
-          zIndex: 1000,
-        }}
-      >
-        <div
-          style={{
-            maxWidth: "1200px",
-            margin: "0 auto",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          {/* Logo Section */}
-          <Link
-            to="/home"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              textDecoration: "none",
-              gap: "10px",
-            }}
-          >
-            <img
-              src={logo}
-              alt="TinyScholars Logo"
-              style={{
-                width: "48px",
-                height: "48px",
-                borderRadius: "50%",
-              }}
-            />
-            <span
-              style={{
-                fontSize: "24px",
-                fontWeight: 600,
-                color: "#22d3ee",
-              }}
-            >
-              TinyScholars
-            </span>
-          </Link>
-
-          {/* Search Bar */}
-          <div
-            style={{
-              flex: "1",
-              maxWidth: "600px",
-              margin: "0 48px",
-              position: "relative",
-            }}
-          >
-            <input
-              type="search"
-              placeholder="Tìm kiếm..."
-              style={{
-                width: "100%",
-                padding: "8px 16px",
-                paddingRight: "40px",
-                borderRadius: "24px",
-                border: "1px solid #e5e7eb",
-                outline: "none",
-                fontSize: "16px",
-              }}
-            />
-            <button
-              style={{
-                position: "absolute",
-                right: "12px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              <img src={search} alt="" style={{ width: "15px" }} />
-            </button>
-          </div>
-
-          {/* Auth Buttons */}
-          <div
-            style={{
-              display: "flex",
-              gap: "16px",
-              alignItems: "center",
-            }}
-          ></div>
-        </div>
-      </nav>
       <div style={styles.loginForm}>
-        {/* Logo */}
-
-        {/* Welcome Text */}
         <h1 style={styles.welcomeText}>CHÀO MỪNG TRỞ LẠI</h1>
-
-        {/* Paw Icon */}
         <div style={styles.pawIconContainer}>
-          <img style={styles.pawIcon} src={logo}></img>
+          <img style={styles.pawIcon} src={logo} alt="Logo" />
         </div>
 
-        {/* Form Fields */}
-        <div style={styles.formFields}>
+        <form onSubmit={handleSubmit}>
           <div style={styles.inputGroup}>
             <label style={styles.label}>Tài khoản</label>
-            <div style={styles.inputContainer}>
-              <input
-                type="email"
-                placeholder="example@gmail.com"
-                style={styles.input}
-              />
-            </div>
+            <input
+              type="email"
+              name="email"
+              value={credentials.email}
+              onChange={handleInputChange}
+              placeholder="example@gmail.com"
+              style={styles.input}
+            />
+            {error.email && <div style={{}}>{error.email}</div>}
           </div>
 
           <div style={styles.inputGroup}>
             <label style={styles.label}>Mật khẩu</label>
             <div style={styles.inputContainer}>
-              <input type="password" style={styles.input} />
-              <span style={styles.eyeIcon}>
-                <img src={eye} alt="" style={{ width: "15px" }} />
+              <input
+                type={isPasswordVisible ? "text" : "password"}
+                name="password"
+                value={credentials.password}
+                onChange={handleInputChange}
+                style={styles.input}
+              />
+              <span
+                style={styles.eyeIcon}
+                onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+              >
+                <img src={eye} alt="Show Password" style={{ width: "15px" }} />
               </span>
             </div>
+            {error.password && <div style={{}}>{error.password}</div>}
           </div>
-        </div>
 
-        {/* Remember Me & Forgot Password */}
-        <div style={styles.rememberForgotContainer}>
-          <label style={styles.checkboxLabel}>
-            <input type="checkbox" style={styles.checkbox} />
-            <span style={styles.checkboxText}>Ghi nhớ đăng nhập</span>
-          </label>
-          <a href="#" style={styles.forgotPassword}>
-            Quên mật khẩu?
-          </a>
-        </div>
+          {error.general && <div style={{}}>{error.general}</div>}
 
-        {/* Buttons */}
-        <div style={styles.buttonContainer}>
-          <button
-            style={{
-              ...styles.loginButton,
-              backgroundColor: isHovered ? "#95CBC6" : "#B7E4E0",
-            }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
-            Đăng nhập →
-          </button>
-          <button style={styles.registerButton}>Đăng ký</button>
-        </div>
+          <div style={styles.buttonContainer}>
+            <button type="button" style={styles.registerButton}>
+              Đăng ký
+            </button>
+            <button
+              type="submit"
+              style={styles.loginButton}
+              disabled={isLoading}
+            >
+              {isLoading ? "Đang xử lý..." : "Đăng nhập →"}
+            </button>
+          </div>
+        </form>
       </div>
-
-      {/* Background Decorations */}
-      <div style={styles.topLeftDecoration}></div>
-      <div style={styles.bottomRightDecoration}></div>
     </div>
   );
 };
@@ -219,21 +177,22 @@ const styles = {
     fontWeight: "600",
   },
   welcomeText: {
+    fontFamily: "Bungee",
     fontSize: "24px",
     textAlign: "center" as "center",
     marginBottom: "32px",
-    color: "#22d3ee",
+    color: "#306f00",
     letterSpacing: "4px",
-    fontWeight: "500",
+    fontWeight: "800",
   },
   pawIconContainer: {
     display: "flex",
     justifyContent: "center",
-    marginBottom: "32px",
+    marginBottom: "12px",
   },
   pawIcon: {
-    width: "48px",
-    height: "48px",
+    width: "80px",
+    height: "80px",
     borderRadius: "50%",
   },
   formFields: {
@@ -258,7 +217,7 @@ const styles = {
     width: "100%",
     padding: "12px 16px",
     borderRadius: "8px",
-    border: "1px solid black",
+    border: "1px solid #306f00",
     fontSize: "14px",
     outline: "none",
     boxSizing: "border-box" as "border-box",
@@ -287,15 +246,16 @@ const styles = {
   },
   checkboxText: {
     fontSize: "14px",
+    color: "#306f00",
   },
   forgotPassword: {
     fontSize: "14px",
-    color: "#B7E4E0",
+    color: "#306f00",
     textDecoration: "none",
   },
   buttonContainer: {
     display: "flex",
-    flexDirection: "column" as "column",
+    flexDirection: "row" as "row",
     gap: "12px",
   },
   loginButton: {

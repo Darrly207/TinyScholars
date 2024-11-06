@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Col, Row } from "react-bootstrap";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo1.png";
 import search from "../assets/z5995353599012_1aa81823073c801aeb426bcaba313cc4.jpg";
 const Header: React.FC = () => {
   return (
@@ -49,7 +49,7 @@ const Header: React.FC = () => {
               style={{
                 fontSize: "24px",
                 fontWeight: 600,
-                color: "#22d3ee",
+                color: "#306f00",
               }}
             >
               TinyScholars
