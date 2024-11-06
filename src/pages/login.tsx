@@ -9,6 +9,8 @@ import facbook from "../assets/blue-white-sign-that-says-facebook_470458-570.avi
 import gmail from "../assets/gmail-logo-on-transparent-white-background-free-vector.jpg";
 import backgroundImage from "../assets/reflection.avif";
 import axios from "axios";
+import backgroundImage1 from "../assets/hinh1.png"
+
 interface GoogleLoginResponse {
   access_token: string;
 }
@@ -68,7 +70,7 @@ const LoginPage: React.FC = () => {
       if (axios.isAxiosError(err) && err.response) {
         setError(
           err.response.data.message ||
-            "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin."
+          "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin."
         );
       } else {
         setError("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
@@ -114,81 +116,93 @@ const LoginPage: React.FC = () => {
   );
 
   return (
-    <div style={styles.loginForm}>
-      <div style={{ flex: 1, marginTop: "2.2%" }}>
-        <div>
-          <h2 style={{ marginLeft: "5%" }}>
-            Đăng nhập hoặc đăng ký nhanh chóng
-          </h2>
-        </div>
-        <div style={{ marginLeft: "5%", marginRight: "10%" }}>
-          Dùng email hoặc dịch vụ khác để tiếp tục với Tiny, hoàn toàn miễn phí
-        </div>
-
-        <button
-          style={styles.googleContainer}
-          onClick={() => googleLogin()}
-          type="button"
-          disabled={isLoading}
-        >
-          <div style={{ flex: 1, marginLeft: 2 }}>
-            <img src={google} alt="Google" style={styles.icon} />
+    <div style={styles.container}>
+      <div style={styles.loginForm}>
+        <div style={{ flex: 1, marginTop: "2.2%" }}>
+          <div>
+            <h2 style={{ marginLeft: "5%" }}>
+              Đăng nhập hoặc đăng ký nhanh chóng
+            </h2>
           </div>
-          <div style={{ flex: 10 }}>Tiếp tục với Google</div>
-        </button>
-
-        {/* Facebook Login Button */}
-        <button
-          style={styles.googleContainer}
-          onClick={handleFacebookLogin}
-          disabled={isLoading}
-        >
-          <div style={{ flex: 1, marginLeft: 2 }}>
-            <img src={facbook} alt="Facebook" style={styles.icon} />
+          <div style={{ marginLeft: "5%", marginRight: "10%" }}>
+            Dùng email hoặc dịch vụ khác để tiếp tục với Tiny, hoàn toàn miễn phí
           </div>
-          <div style={{ flex: 10 }}>Tiếp tục với Facebook</div>
-        </button>
 
-        {/* Gmail Sign Up Button */}
-        <button
-          style={styles.googleContainer}
-          onClick={handleGmailClick}
-          type="button"
-          disabled={isLoading}
-        >
-          <div style={{ flex: 1, marginLeft: 2 }}>
-            <img src={gmail} alt="Gmail" style={styles.icon} />
+          <button
+            style={styles.googleContainer}
+            onClick={() => googleLogin()}
+            type="button"
+            disabled={isLoading}
+          >
+            <div style={{ flex: 1, marginLeft: 2 }}>
+              <img src={google} alt="Google" style={styles.icon} />
+            </div>
+            <div style={{ flex: 10 }}>Tiếp tục với Google</div>
+          </button>
+
+          {/* Facebook Login Button */}
+          <button
+            style={styles.googleContainer}
+            onClick={handleFacebookLogin}
+            disabled={isLoading}
+          >
+            <div style={{ flex: 1, marginLeft: 2 }}>
+              <img src={facbook} alt="Facebook" style={styles.icon} />
+            </div>
+            <div style={{ flex: 10 }}>Tiếp tục với Facebook</div>
+          </button>
+
+          {/* Gmail Sign Up Button */}
+          <button
+            style={styles.googleContainer}
+            onClick={handleGmailClick}
+            type="button"
+            disabled={isLoading}
+          >
+            <div style={{ flex: 1, marginLeft: 2 }}>
+              <img src={gmail} alt="Gmail" style={styles.icon} />
+            </div>
+            <div style={{ flex: 10 }}>Tiếp tục với Gmail</div>
+          </button>
+
+          {error && <div style={styles.error}>{error}</div>}
+
+          <div style={styles.terms}>
+            Tiếp tục có nghĩa là bạn đồng ý với{" "}
+            <a href="/terms" style={styles.link}>
+              Điều khoản sử dụng
+            </a>{" "}
+            của Tiny. Đọc{" "}
+            <a href="/privacy" style={styles.link}>
+              Chính sách quyền riêng tư của chúng tôi
+            </a>
           </div>
-          <div style={{ flex: 10 }}>Tiếp tục với Gmail</div>
-        </button>
-
-        {error && <div style={styles.error}>{error}</div>}
-
-        <div style={styles.terms}>
-          Tiếp tục có nghĩa là bạn đồng ý với{" "}
-          <a href="/terms" style={styles.link}>
-            Điều khoản sử dụng
-          </a>{" "}
-          của Tiny. Đọc{" "}
-          <a href="/privacy" style={styles.link}>
-            Chính sách quyền riêng tư của chúng tôi
-          </a>
         </div>
+        <div style={styles.image} />
       </div>
-      <div style={styles.image} />
     </div>
   );
 };
 
 const styles = {
+  container: {
+    backgroundImage: `url(${backgroundImage1})`,
+    height: '100vh',
+    width: "100vw",
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundSize: 'cover',
+    alignItems: 'center',
+  },
   loginForm: {
     maxHeight: "65%",
     height: "70vh",
     maxWidth: "80%",
     width: "80vh",
     background: "#DDDDDD",
+    alignItems: 'center',
     display: "flex",
-    margin: "auto",
+
     marginTop: "5%",
     borderRadius: 20,
   },
