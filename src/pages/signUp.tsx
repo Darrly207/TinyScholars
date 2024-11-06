@@ -7,20 +7,17 @@ import eye from "../assets/z5995359982036_8f916b50aa1f59258171ad18fc8fe073.jpg";
 import { LoginCredentials } from "../types/auth";
 import { useAuth } from "../context/authContext";
 import axios from "axios";
-
+import Header from "../components/Header";
 interface LoginError {
   email?: string;
   password?: string;
   general?: string;
 }
-
 const Signup = () => {
   const { login } = useAuth();
+  const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
   const [isHovered2, setIsHovered2] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<LoginError>({});
   const [credentials, setCredentials] = useState<LoginCredentials>({
@@ -32,9 +29,11 @@ const Signup = () => {
   const validateForm = (): boolean => {
     const newErrors: LoginError = {};
 
-    if (!credentials.email) {
+    if (!credentials.email.trim()) {
       newErrors.email = "Email là bắt buộc";
-    } else if (!/\S+@\S+\.\S+/.test(credentials.email)) {
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(credentials.email)
+    ) {
       newErrors.email = "Email không hợp lệ";
     }
 
@@ -48,9 +47,13 @@ const Signup = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setCredentials({ ...credentials, [name]: value });
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setCredentials({
+      // Fixed: Changed credentials() to setCredentials()
+      ...credentials,
+      [name]: value,
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -61,41 +64,69 @@ const Signup = () => {
     setError({});
 
     try {
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        credentials
+      );
+
       await login(credentials);
-      navigate("/home");
+      if (response.data.user) {
+        localStorage.setItem("userData", JSON.stringify(response.data.user));
+        navigate("/home");
+      }
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response) {
-        setError({
-          general: err.response.data.message || "Đăng nhập thất bại.",
-        });
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401) {
+          setError({
+            general: "Email hoặc mật khẩu không chính xác",
+          });
+        } else if (err.response?.status === 404) {
+          setError({
+            email: "Tài khoảng không tồn tại",
+          });
+        } else {
+          setError({
+            general: "Đã có lỗi xảy ra. Vui lòng thử lại sau.",
+          });
+        }
       } else {
-        setError({ general: "Đăng nhập thất bại." });
+        setError({
+          general: "Không thể kết nối đến máy chủ",
+        });
       }
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Added error message component for reusability
+  const ErrorMessage = ({ message }: { message?: string }) =>
+    message ? <div className="text-red-500 text-sm mt-1">{message}</div> : null;
+
   return (
     <div style={styles.container}>
+      <Header />
+
       <div style={styles.loginForm}>
         <h1 style={styles.welcomeText}>CHÀO MỪNG TRỞ LẠI</h1>
+
         <div style={styles.pawIconContainer}>
-          <img style={styles.pawIcon} src={logo} alt="Logo" />
+          <img src={logo} alt="Logo" style={styles.pawIcon} />
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} style={styles.formFields}>
           <div style={styles.inputGroup}>
             <label style={styles.label}>Tài khoản</label>
-            <input
-              type="email"
-              name="email"
-              value={credentials.email}
-              onChange={handleInputChange}
-              placeholder="example@gmail.com"
-              style={styles.input}
-            />
-            {error.email && <div style={{}}>{error.email}</div>}
+            <div style={styles.inputContainer}>
+              <input
+                name="email"
+                value={credentials.email}
+                onChange={handleInputChange}
+                placeholder="example@gmail.com"
+                style={styles.input}
+              />
+              <ErrorMessage message={error.email} />
+            </div>
           </div>
 
           <div style={styles.inputGroup}>
@@ -108,25 +139,53 @@ const Signup = () => {
                 onChange={handleInputChange}
                 style={styles.input}
               />
-              <span
+              <button
+                type="button"
                 style={styles.eyeIcon}
                 onClick={() => setIsPasswordVisible(!isPasswordVisible)}
               >
-                <img src={eye} alt="Show Password" style={{ width: "15px" }} />
-              </span>
+                <img src={eye} alt="" style={{ width: "15px" }} />
+              </button>
+              <ErrorMessage message={error.password} />
             </div>
-            {error.password && <div style={{}}>{error.password}</div>}
           </div>
 
-          {error.general && <div style={{}}>{error.general}</div>}
+          <ErrorMessage message={error.general} />
+
+          <div style={styles.rememberForgotContainer}>
+            <label style={styles.checkboxLabel}>
+              <input type="checkbox" style={styles.checkbox} />
+              <span style={styles.checkboxText}>Ghi nhớ đăng nhập</span>
+            </label>
+            <a href="#" style={styles.forgotPassword}>
+              Quên mật khẩu?
+            </a>
+          </div>
 
           <div style={styles.buttonContainer}>
-            <button type="button" style={styles.registerButton}>
+            <button
+              type="button"
+              style={{
+                ...styles.registerButton,
+                background: "linear-gradient(45deg, #f1b21f, #306f00)",
+                color: isHovered2 ? "white" : "black",
+                flex: 3.5,
+              }}
+              onMouseEnter={() => setIsHovered2(true)}
+              onMouseLeave={() => setIsHovered2(false)}
+            >
               Đăng ký
             </button>
             <button
               type="submit"
-              style={styles.loginButton}
+              style={{
+                ...styles.loginButton,
+                background: "linear-gradient(45deg, #f1b21f, #306f00)",
+                color: isHovered ? "white" : "black",
+                flex: 6.5,
+              }}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
               disabled={isLoading}
             >
               {isLoading ? "Đang xử lý..." : "Đăng nhập →"}
@@ -134,6 +193,9 @@ const Signup = () => {
           </div>
         </form>
       </div>
+
+      <div style={styles.topLeftDecoration}></div>
+      <div style={styles.bottomRightDecoration}></div>
     </div>
   );
 };
@@ -189,6 +251,65 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     marginBottom: "12px",
+  },
+  nav: {
+    background: "white",
+    padding: "10px 20px",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    position: "fixed" as const,
+    width: "100%",
+    top: 0,
+    zIndex: 1000,
+  },
+  navContent: {
+    maxWidth: "1200px",
+    margin: "0 auto",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  logoLink: {
+    display: "flex",
+    alignItems: "center",
+    textDecoration: "none",
+    gap: "10px",
+  },
+  navLogo: {
+    width: "48px",
+    height: "48px",
+    borderRadius: "50%",
+  },
+  brandName: {
+    fontSize: "24px",
+    fontWeight: 600,
+    color: "#306f00",
+  },
+  searchContainer: {
+    flex: 1,
+    maxWidth: "600px",
+    margin: "0 48px",
+    position: "relative" as const,
+  },
+  searchInput: {
+    width: "100%",
+    padding: "8px 16px",
+    paddingRight: "40px",
+    borderRadius: "24px",
+    border: "1px solid #e5e7eb",
+    outline: "none",
+    fontSize: "16px",
+  },
+  searchButton: {
+    position: "absolute" as const,
+    right: "12px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+  },
+  searchIcon: {
+    width: "15px",
   },
   pawIcon: {
     width: "80px",

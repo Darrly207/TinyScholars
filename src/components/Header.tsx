@@ -1,11 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Col, Row } from "react-bootstrap";
+import { useAuth } from "../context/authContext";
 import logo from "../assets/logo1.png";
-import search from "../assets/z5995353599012_1aa81823073c801aeb426bcaba313cc4.jpg";
 const Header: React.FC = () => {
+  const { user, logout } = useAuth();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  // Close dropdown when clicking outside
+  React.useEffect(() => {
+    const closeDropdown = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest(".user-dropdown")) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("click", closeDropdown);
+    return () => document.removeEventListener("click", closeDropdown);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    setIsDropdownOpen(false);
+  };
+
   return (
-    <div style={{}}>
+    <div>
       <nav
         style={{
           background: "white",
@@ -26,9 +50,8 @@ const Header: React.FC = () => {
             alignItems: "center",
           }}
         >
-          {/* Logo Section */}
           <Link
-            to="/home"
+            to="/"
             style={{
               display: "flex",
               alignItems: "center",
@@ -49,7 +72,7 @@ const Header: React.FC = () => {
               style={{
                 fontSize: "24px",
                 fontWeight: 600,
-                color: "#306f00",
+                color: "#22d3ee",
               }}
             >
               TinyScholars
@@ -89,18 +112,169 @@ const Header: React.FC = () => {
                 cursor: "pointer",
               }}
             >
-              <img src={search} alt="" style={{ width: "15px" }} />
+              <img src="/path/to/search.jpg" alt="" style={{ width: "15px" }} />
             </button>
           </div>
 
-          {/* Auth Buttons */}
+          {/* Conditional Auth Section */}
           <div
             style={{
               display: "flex",
               gap: "16px",
               alignItems: "center",
             }}
-          ></div>
+          >
+            {user ? (
+              // User is authenticated
+              <div className="user-dropdown" style={{ position: "relative" }}>
+                <button
+                  onClick={toggleDropdown}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                      overflow: "hidden",
+                      border: "2px solid #22d3ee",
+                    }}
+                  >
+                    {user.avatar ? (
+                      <img
+                        src={user.avatar}
+                        alt="User avatar"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          background: "#22d3ee",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "white",
+                          fontSize: "16px",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {user.firstName?.[0]?.toUpperCase() ||
+                          user.email?.[0]?.toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                </button>
+
+                {isDropdownOpen && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "calc(100% + 8px)",
+                      right: 0,
+                      background: "white",
+                      borderRadius: "8px",
+                      boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+                      minWidth: "200px",
+                      padding: "8px 0",
+                    }}
+                  >
+                    <div
+                      style={{
+                        padding: "8px 16px",
+                        borderBottom: "1px solid #e5e7eb",
+                      }}
+                    >
+                      <div style={{ fontWeight: "bold" }}>{user.firstName}</div>
+                      <div style={{ fontSize: "14px", color: "#6b7280" }}>
+                        {user.email}
+                      </div>
+                    </div>
+                    <Link
+                      to="/profile"
+                      style={{
+                        display: "block",
+                        padding: "8px 16px",
+                        color: "#374151",
+                        textDecoration: "none",
+                      }}
+                    >
+                      Hồ sơ của tôi
+                    </Link>
+                    <Link
+                      to="/settings"
+                      style={{
+                        display: "block",
+                        padding: "8px 16px",
+                        color: "#374151",
+                        textDecoration: "none",
+                      }}
+                    >
+                      Cài đặt
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      style={{
+                        width: "100%",
+                        padding: "8px 16px",
+                        textAlign: "left",
+                        background: "none",
+                        border: "none",
+                        color: "#ef4444",
+                        cursor: "pointer",
+                        fontSize: "16px",
+                      }}
+                    >
+                      Đăng xuất
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              // User is not authenticated
+              <>
+                <Link
+                  to="/login"
+                  style={{
+                    padding: "8px 24px",
+                    borderRadius: "24px",
+                    border: "1px solid #e5e7eb",
+                    textDecoration: "none",
+                    color: "#374151",
+                    transition: "background-color 0.2s",
+                  }}
+                >
+                  Đăng nhập
+                </Link>
+                <Link
+                  to="/register"
+                  style={{
+                    padding: "8px 24px",
+                    borderRadius: "24px",
+                    backgroundColor: "#a5f3fc",
+                    textDecoration: "none",
+                    color: "#374151",
+                    transition: "background-color 0.2s",
+                  }}
+                >
+                  Đăng ký
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </nav>
     </div>

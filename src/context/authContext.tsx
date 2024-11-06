@@ -111,7 +111,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = async (credentials: LoginCredentials) => {
     try {
       const response = await axios.post<AuthResponse>(
-        "http://localhost:3000/api/auth/login",
+        "http://localhost:5000/api/auth/login",
 
         credentials
       );
@@ -145,7 +145,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const loginWithGoogle = async (token: string) => {
     try {
       const response = await axios.post<AuthResponse>(
-        "http://localhost:3000/api/auth/google",
+        "http://localhost:5000/api/auth/google",
         {
           token,
         }
@@ -164,7 +164,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const loginWithFacebook = async (token: string) => {
     try {
       const response = await axios.post<AuthResponse>(
-        "http://localhost:3000/api/auth/facebook",
+        "http://localhost:5000/api/auth/facebook",
         {
           accessToken: token,
         }
