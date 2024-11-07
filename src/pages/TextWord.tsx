@@ -6,7 +6,7 @@ import { Medal, Trophy, Award } from 'lucide-react';
 import Confetti from '../components/Confetti';
 import SadFace from '../components/SadFace';
 import { useGameLogic } from '../hook/TextWord';
-import './App.css';
+import '../style/styles.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Define interfaces for the game data structure
