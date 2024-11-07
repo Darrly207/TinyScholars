@@ -25,6 +25,7 @@ interface MultipleChoiceGame {
 interface MultipleChoiceProps {
   question: MultipleChoiceGame;
   onQuestionUpdate: (question: MultipleChoiceGame) => void;
+  onAnswerSelected?: (answer: number) => void;
   standalone?: boolean;
   background?: string;
 }

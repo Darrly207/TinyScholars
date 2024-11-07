@@ -1,5 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../components/ui/alert-dialog";
 import imgBackground from "../assets/hinh1.png";
 import logo from "../assets/logo1.png";
 import search from "../assets/z5995353599012_1aa81823073c801aeb426bcaba313cc4.jpg";
@@ -8,18 +18,21 @@ import { LoginCredentials } from "../types/auth";
 import { useAuth } from "../context/authContext";
 import axios from "axios";
 import Header from "../components/Header";
+
 interface LoginError {
   email?: string;
   password?: string;
   general?: string;
 }
+
 const Signup = () => {
-  const { login } = useAuth();
+  const { login, register } = useAuth();
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
   const [isHovered2, setIsHovered2] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<LoginError>({});
+  const [showRegisterDialog, setShowRegisterDialog] = useState(false);
   const [credentials, setCredentials] = useState<LoginCredentials>({
     email: "",
     password: "",
@@ -50,10 +63,22 @@ const Signup = () => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setCredentials({
-      // Fixed: Changed credentials() to setCredentials()
       ...credentials,
       [name]: value,
     });
+  };
+
+  const handleRegister = async () => {
+    try {
+      await register(credentials);
+      navigate("/home");
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError({
+          general: "Đăng ký thất bại. Vui lòng thử lại sau.",
+        });
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -81,9 +106,8 @@ const Signup = () => {
             general: "Email hoặc mật khẩu không chính xác",
           });
         } else if (err.response?.status === 404) {
-          setError({
-            email: "Tài khoảng không tồn tại",
-          });
+          // Show registration dialog when account doesn't exist
+          setShowRegisterDialog(true);
         } else {
           setError({
             general: "Đã có lỗi xảy ra. Vui lòng thử lại sau.",
@@ -99,7 +123,6 @@ const Signup = () => {
     }
   };
 
-  // Added error message component for reusability
   const ErrorMessage = ({ message }: { message?: string }) =>
     message ? <div className="text-red-500 text-sm mt-1">{message}</div> : null;
 
@@ -107,7 +130,31 @@ const Signup = () => {
     <div style={styles.container}>
       <Header />
 
+      <AlertDialog
+        open={showRegisterDialog}
+        onOpenChange={setShowRegisterDialog}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Tài khoản không tồn tại</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tài khoản này chưa được đăng ký. Bạn có muốn đăng ký tài khoản mới
+              không?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setShowRegisterDialog(false)}>
+              Hủy
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleRegister}>
+              Đăng ký
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div style={styles.loginForm}>
+        {/* Rest of the existing JSX remains the same */}
         <h1 style={styles.welcomeText}>CHÀO MỪNG TRỞ LẠI</h1>
 
         <div style={styles.pawIconContainer}>

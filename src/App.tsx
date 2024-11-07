@@ -10,7 +10,7 @@ import LoginPage from "./pages/signIn";
 import Signup from "./pages/signUp";
 import Support from "./pages/support";
 import Home from "./pages/home";
-
+import startPage from "./pages/startGame";
 import GameLayout from "./pages/gameLayout";
 import { FullscreenProvider } from "./context/fullScreenContext";
 import { ToastContainer } from "react-toastify";
@@ -36,6 +36,7 @@ const App: React.FC = () => {
           <Route path="/home" element={<Home />} />
           <Route path="/GameLayout" element={<GameLayout />} />
         </Routes>
+
         <ToastContainer />
       </AuthProvider>
     </GoogleOAuthProvider>
@@ -51,3 +52,7 @@ const AppWithRouter: React.FC = () => (
 );
 
 export default AppWithRouter;
+// {
+//   path: "/play",
+//   element: <GamePlayPage questions={questions} settings={settings} />
+// }

@@ -6,7 +6,7 @@ interface AuthContextType extends AuthState {
   login: (credentials: LoginCredentials) => Promise<void>;
   loginWithGoogle: (token: string) => Promise<void>;
   loginWithFacebook: (token: string) => Promise<void>;
-  // register: (user: any) => Promise<void>;
+  register: (user: any) => Promise<void>;
   logout: () => void;
 }
 
@@ -125,22 +125,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       throw error;
     }
   };
-  // const register = async () => {
-  //   try {
-  //     const response = await axios.post<AuthResponse>(
-  //       "http://localhost:3000/api/auth/login",
-  //       email:
-  //     );
-  //     const { user, token, refreshToken } = response.data;
+  const register = async (credentials: LoginCredentials) => {
+    try {
+      const response = await axios.post<AuthResponse>(
+        "http://localhost:5000/api/auth/login",
+        credentials
+      );
+      const { user, token, refreshToken } = response.data;
 
-  //     localStorage.setItem("token", token);
-  //     localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("token", token);
+      localStorage.setItem("refreshToken", refreshToken);
 
-  //     dispatch({ type: "LOGIN_SUCCESS", payload: response.data });
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // };
+      dispatch({ type: "LOGIN_SUCCESS", payload: response.data });
+    } catch (error) {
+      throw error;
+    }
+  };
 
   const loginWithGoogle = async (token: string) => {
     try {
@@ -194,6 +194,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         loginWithGoogle,
         loginWithFacebook,
         logout,
+        register,
       }}
     >
       {children}
