@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { Card } from "../components/card";
-import { Button } from "../components/button";
-import { Alert } from "../components/alert";
-import { Medal, Trophy, Award } from "lucide-react";
-import Confetti from "../components/Confetti";
-import SadFace from "../components/SadFace";
-import { useGameLogic } from "../hook/TextWord";
-import imgBackground from "../assets/background1.png";
+import React from 'react';
+import { Card } from '../components/card';
+import { Button } from '../components/button';
+import { Alert } from '../components/alert';
+import { Medal, Trophy, Award } from 'lucide-react';
+import Confetti from '../components/Confetti';
+import SadFace from '../components/SadFace';
+import { useGameLogic } from '../hook/TextWord';
+import '../style/styles.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+// Define interfaces for the game data structure
 interface GameQuestion {
   image: string;
   options: string[];
