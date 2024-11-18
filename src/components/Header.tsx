@@ -51,7 +51,7 @@ const Header: React.FC = () => {
           }}
         >
           <Link
-            to="/"
+            to="/home"
             style={{
               display: "flex",
               alignItems: "center",
@@ -72,7 +72,7 @@ const Header: React.FC = () => {
               style={{
                 fontSize: "24px",
                 fontWeight: 600,
-                color: "#22d3ee",
+                color: "#306f00",
               }}
             >
               TinyScholars

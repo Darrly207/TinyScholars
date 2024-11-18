@@ -14,7 +14,7 @@ import imgBackground from "../assets/hinh1.png";
 import logo from "../assets/logo1.png";
 import search from "../assets/z5995353599012_1aa81823073c801aeb426bcaba313cc4.jpg";
 import eye from "../assets/z5995359982036_8f916b50aa1f59258171ad18fc8fe073.jpg";
-import { LoginCredentials } from "../types/auth";
+import { LoginCredentials } from "../store/types/auth";
 import { useAuth } from "../context/authContext";
 import axios from "axios";
 import Header from "../components/Header";
@@ -128,8 +128,6 @@ const Signup = () => {
 
   return (
     <div style={styles.container}>
-      <Header />
-
       <AlertDialog
         open={showRegisterDialog}
         onOpenChange={setShowRegisterDialog}

@@ -10,7 +10,7 @@ import {
   TrueFalse,
   MemoryCard,
   FillInBlankGame,
-} from "../types/game";
+} from "../store/types/game";
 
 interface GamePlayProps {
   questions: Question[];

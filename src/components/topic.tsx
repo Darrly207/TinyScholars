@@ -4,8 +4,8 @@ import {
   GameSettings as GameSettingsType,
   Question,
   MediaItem,
-} from "../types/game";
-import backgroundImages from "../assets/backgroundlogina.png";
+} from "../store/types/game";
+import backgroundImages from "../assets/background1.png";
 interface Topic {
   id: string;
   name: string;

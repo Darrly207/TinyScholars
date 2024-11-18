@@ -1,6 +1,8 @@
 // useGameLogic.ts
 import { useState } from 'react';
-
+import BUFFALO from "../assets/BUFFALO.avif";
+import APPLE from"../assets/APPLE.avif"
+import car from "../assets/CAR.avif"
 export interface GameData {
     image: string;
     options: string[];
@@ -10,19 +12,19 @@ export interface GameData {
 
 export const gameData: GameData[] = [
     {
-        image: "/api/placeholder/400/400",
+        image: BUFFALO,
         options: ["BUFFALO", "CRAB", "BEAR", "CAT"],
         correctAnswer: "BUFFALO",
         category: "Animals"
     },
     {
-        image: "/api/placeholder/400/400",
+        image: APPLE,
         options: ["APPLE", "BANANA", "ORANGE", "GRAPE"],
         correctAnswer: "APPLE",
         category: "Fruits"
     },
     {
-        image: "/api/placeholder/400/400",
+        image: car,
         options: ["CAR", "BIKE", "BUS", "TRAIN"],
         correctAnswer: "CAR",
         category: "Vehicles"

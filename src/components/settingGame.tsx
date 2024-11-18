@@ -8,7 +8,7 @@ import type {
   TrueFalse,
   MemoryCard,
   FillInBlankGame,
-} from "../types/game";
+} from "../store/types/game";
 
 export type GameType =
   | "multipleChoice"

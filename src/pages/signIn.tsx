@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../context/authContext";
-import { LoginCredentials } from "../types/auth";
+import { LoginCredentials } from "../store/types/auth";
 import { useFacebookLogin } from "../hook/useFacebookLogin";
 import google from "../assets/google-icon-isolated-3d-render-illustration_47987-9777.avif";
 import facbook from "../assets/blue-white-sign-that-says-facebook_470458-570.avif";

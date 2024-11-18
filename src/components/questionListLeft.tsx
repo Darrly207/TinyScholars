@@ -1,6 +1,6 @@
 import React from "react";
 import { Trash2, Plus } from "lucide-react";
-import { Question } from "../types/game";
+import { Question } from "../store/types/game";
 import "bootstrap/dist/css/bootstrap.min.css";
 interface QuestionListProps {
   questions: Question[];

@@ -7,7 +7,7 @@ import {
   TrueFalse,
   MemoryCard,
   FillInBlankGame,
-} from "../types/game";
+} from "../store/types/game";
 import MemoryCardGame from "../components/memoryCard";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "../components/navbar";
@@ -17,6 +17,7 @@ import { FullscreenContext } from "../context/fullScreenContext";
 import TrueFalseQuest from "../components/trueFalseQuest";
 import FillInBlankQuest from "../components/fillInBlank";
 import background1 from "../assets/background1.png";
+import Header from "../components/Header";
 export type GameType = "multipleChoice" | "trueFalse" | "memoryCard";
 export type Background = "default" | "nature" | "space" | "abstract";
 
@@ -264,6 +265,7 @@ const GameLayout: React.FC = () => {
         overflow: "hidden",
       }}
     >
+      <Header />
       <div style={{ display: "flex" }}>
         {/* Left Sidebar */}
         <div style={{ flex: 1.5 }}>

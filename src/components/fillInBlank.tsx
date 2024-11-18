@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BaseQuestion } from "../types/game";
+import { BaseQuestion } from "../store/types/game";
 
 interface FillInBlankGame extends BaseQuestion {
   type: "fillInBlank";

@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Logo from "./logo";
 import { Link } from "react-router-dom";
-import { Button } from "react-bootstrap";
+import { Alert, Button } from "react-bootstrap";
 import { FullscreenContext } from "../context/fullScreenContext";
 interface NavbarProps {
   onToggleFullscreen: () => void;
@@ -29,7 +29,10 @@ const Navbar: React.FC = (onToggleFullscreen) => {
         display: "flex",
       }}
     >
-      <Link to="/start" style={{ marginLeft: "40vw", textDecoration: "none" }}>
+      <Link
+        to="/textword"
+        style={{ marginLeft: "40vw", textDecoration: "none" }}
+      >
         <h2>Bắt Đầu</h2>
       </Link>
 
@@ -63,17 +66,17 @@ const Navbar: React.FC = (onToggleFullscreen) => {
         </div>
         <div>
           <Button style={{ background: "white", margin: "0px 10px" }}>
-            <Link
-              to="/upgrade"
-              style={{ color: "black", textDecoration: "none" }}
-            >
+            <Link to="/home" style={{ color: "black", textDecoration: "none" }}>
               Thoát
             </Link>
           </Button>
           <Button>
             <Link
-              to="/upgrade"
+              to="/gameLayout"
               style={{ color: "black", textDecoration: "none" }}
+              onClick={() => {
+                alert("Lưu thành công");
+              }}
             >
               Lưu
             </Link>

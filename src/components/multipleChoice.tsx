@@ -277,7 +277,7 @@ const MultipleChoice: React.FC<MultipleChoiceProps> = ({
       <style>{`
         .game-container {
           width: 100%;
-          height: 100vh;
+          height: 100%;
           background-size: cover;
           background-position: center;
           background-repeat: no-repeat;

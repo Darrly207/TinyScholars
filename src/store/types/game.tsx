@@ -2,9 +2,37 @@ export type GameType =
   | "multipleChoice"
   | "trueFalse"
   | "memoryCard"
-  | "timeline"
+  | "blank"
   | "fillInBlank";
+export type GameStatus = "playing" | "finished" | "notStarted";
+export type GameMode = "single" | "multi";
+export type isFullScreen = "true" | "false";
+export type effect = "none" | "fade" | "slide" | "flip" | "cube" | "coverflow";
 
+export interface meme {
+  id: string;
+  idReferences: [Array<BaseQuestion>];
+  imgUrl: string;
+  width: number;
+  height: number;
+  position: {
+    x: number;
+    y: number;
+  };
+  floor: number; // tầng
+  rotation: number; // góc quay
+  scale: number; // tỉ l
+  effect: effect;
+}
+export interface folder {
+  id: string;
+  user: string;
+  Description: string;
+  imageInitial: string;
+  listBaseQuestion: [Array<BaseQuestion>];
+  created: Date;
+  updated: Date;
+}
 export interface BaseQuestion {
   mediaItems: MediaItem[];
   id: number;
@@ -12,6 +40,11 @@ export interface BaseQuestion {
   type: GameType;
   background?: string;
   customBackground?: string;
+  isFullScreen: isFullScreen;
+  GameMode: GameMode;
+  status: GameStatus;
+  created: Date;
+  updated: Date;
 }
 
 export interface MultipleChoiceGame extends BaseQuestion {

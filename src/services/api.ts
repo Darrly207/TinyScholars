@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import { AuthResponse, LoginCredentials, User } from '../types/auth';
+import { AuthResponse, LoginCredentials, User } from '../store/types/auth';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 

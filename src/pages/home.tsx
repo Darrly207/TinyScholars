@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import logo from "../assets/logo1.png";
-import search from "../assets/z5995353599012_1aa81823073c801aeb426bcaba313cc4.jpg";
+
 import Header from "../components/Header";
+
 function Home() {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
   return (
     <div className="app-container" style={{ minHeight: "100vh" }}>
       <Header />
-
-      {/* Hero Section */}
       <div
         style={{
           maxWidth: "1200px",
@@ -32,27 +32,27 @@ function Home() {
           <span>lý tưởng cho bé!!!</span>
         </h1>
 
-        <button
-          style={{
-            padding: "12px 32px",
-            fontSize: "18px",
-            fontWeight: 500,
-            backgroundColor: "#a5f3fc",
-            border: "none",
-            borderRadius: "24px",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            margin: "0 auto",
-            transition: "background-color 0.2s",
-          }}
-        >
-          <Link to="/gameLayout" style={{ textDecoration: "none" }}>
-            Bắt đầu{" "}
-          </Link>
-          <span>▶</span>
-        </button>
+        <Link to="/GameLayout" style={{ textDecoration: "none" }}>
+          <button
+            style={{
+              padding: "12px 32px",
+              fontSize: "18px",
+              fontWeight: 500,
+              backgroundColor: "#a5f3fc",
+              border: "none",
+              borderRadius: "24px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              margin: "0 auto",
+              transition: "background-color 0.2s",
+              color: "inherit",
+            }}
+          >
+            Bắt đầu <span>▶</span>
+          </button>
+        </Link>
       </div>
 
       {/* Subject Grid */}
@@ -65,6 +65,7 @@ function Home() {
           right: "50px",
         }}
       >
+        {/* Navigation Arrow Left */}
         <button
           style={{
             position: "absolute",
@@ -100,9 +101,14 @@ function Home() {
             { name: "Lịch sử", color: "#fca5a5", icon: "⏳" },
             { name: "Địa lí", color: "#d8b4fe", icon: "🌍" },
           ].map((subject, index) => (
-            <div
+            <Link
+              to="/gameLayout"
               key={index}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
               style={{
+                textDecoration: "none",
+                color: "inherit",
                 backgroundColor: subject.color,
                 borderRadius: "24px",
                 padding: "24px",
@@ -114,10 +120,7 @@ function Home() {
                 justifyContent: "center",
                 cursor: "pointer",
                 transition: "transform 0.2s",
-                marginRight: "20px",
-                // ":hover": {
-                //   transform: "scale(1.05)",
-                // },
+                transform: hoveredIndex === index ? "scale(1.05)" : "scale(1)",
               }}
             >
               <span style={{ fontSize: "36px", marginBottom: "16px" }}>
@@ -126,11 +129,10 @@ function Home() {
               <h3 style={{ fontSize: "20px", fontWeight: 500 }}>
                 {subject.name}
               </h3>
-            </div>
+            </Link>
           ))}
         </div>
 
-        {/* Navigation Arrow Right */}
         <button
           style={{
             position: "absolute",

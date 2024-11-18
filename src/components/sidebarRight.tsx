@@ -6,7 +6,7 @@ import {
   GameSettings,
   GameSettings as GameSettingsType,
   Question,
-} from "../types/game";
+} from "../store/types/game";
 import { ChevronLeft, ChevronRight } from "lucide-react"; // Import icons
 
 interface SidebarRightProps {

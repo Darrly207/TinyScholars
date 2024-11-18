@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MemoryCard as MemoryCardType } from "../types/game";
+import { MemoryCard as MemoryCardType } from "../store/types/game";
 
 interface MemoryCardProps {
   question: MemoryCardType;

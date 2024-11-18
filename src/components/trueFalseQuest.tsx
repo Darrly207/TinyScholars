@@ -1,5 +1,5 @@
 import React from "react";
-import { TrueFalse } from "../types/game";
+import { TrueFalse } from "../store/types/game";
 import VideoComponent from "./mediaVideo";
 import "../style/fullScreen.css";
 

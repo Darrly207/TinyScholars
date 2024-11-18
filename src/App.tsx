@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/authContext";
 import Header from "./components/Header";
-import IndexPage from "./pages";
 import Business from "./pages/business";
 import PackagesAndPrices from "./pages/packagesAndPrices";
 import FeaturedGames from "./pages/featuredGames";
@@ -15,6 +14,9 @@ import GameLayout from "./pages/gameLayout";
 import { FullscreenProvider } from "./context/fullScreenContext";
 import { ToastContainer } from "react-toastify";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import TextWord from "./pages/TextWord";
+import store from "./store/store";
+import { Provider } from "react-redux";
 const App: React.FC = () => {
   const location = useLocation();
 
@@ -22,8 +24,6 @@ const App: React.FC = () => {
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}>
       <AuthProvider>
         {/* Only render Header if not on the /home route */}
-        {location.pathname !== "/home" &&
-          location.pathname !== "/GameLayout" && <Header />}
 
         <Routes>
           <Route path="/" element={<LoginPage />} />
@@ -34,6 +34,8 @@ const App: React.FC = () => {
           <Route path="/Signup" element={<Signup />} />
           <Route path="/support" element={<Support />} />
           <Route path="/home" element={<Home />} />
+          {/* <Route path="/start" element={<startPage />} /> */}
+          <Route path="/TextWord" element={<TextWord />} />
           <Route path="/GameLayout" element={<GameLayout />} />
         </Routes>
 
@@ -44,11 +46,13 @@ const App: React.FC = () => {
 };
 
 const AppWithRouter: React.FC = () => (
-  <BrowserRouter>
-    <FullscreenProvider>
-      <App />
-    </FullscreenProvider>
-  </BrowserRouter>
+  <Provider store={store}>
+    <BrowserRouter>
+      <FullscreenProvider>
+        <App />
+      </FullscreenProvider>
+    </BrowserRouter>
+  </Provider>
 );
 
 export default AppWithRouter;
